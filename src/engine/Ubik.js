@@ -1,6 +1,6 @@
 import Logger from './Logger';
 
-class Stan {
+class Ubik {
   constructor() {
     // Game loop
     this.startTime = Date.now();
@@ -11,7 +11,7 @@ class Stan {
 
     // Tools
     this.logger = new Logger();
-    this.logger.info('Stan constructor called');
+    this.logger.info('Ubik constructor called');
 
     // Custom update method overwritten by user
     this.update = () => {};
@@ -19,7 +19,7 @@ class Stan {
 
   start() {
     this.isRunning = true;
-    this.logger.info('Stan engine starts');
+    this.logger.info('Ubik engine starts');
     // Start the game loop
     this.frame();
   }
@@ -46,4 +46,4 @@ class Stan {
   }
 }
 
-export default Stan;
+export default Ubik;
