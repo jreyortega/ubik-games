@@ -1,0 +1,10 @@
+import Stan from '../engine/Stan.js';
+
+const stan = new Stan();
+
+stan.update = (dt) => {
+  stan.logger.info('My game loop works!');
+  stan.logger.info('Last dt = ' + dt);
+};
+
+stan.start();
