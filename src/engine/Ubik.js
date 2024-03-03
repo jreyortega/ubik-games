@@ -25,6 +25,11 @@ class Ubik {
   }
 
   frame() {
+    // Check if the game is running
+    if (!this.isRunning) {
+      return; // Exit the frame loop if the game is not running
+    }
+    
     // Ask the browser to call this method ASAP
     window.requestAnimationFrame(() => {
       this.frame();
