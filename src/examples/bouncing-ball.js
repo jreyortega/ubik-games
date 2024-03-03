@@ -20,13 +20,22 @@ class BouncingBall {
     // Update position
     this.x += this.speedX * dt;
     this.y += this.speedY * dt;
-
+  
     // Bounce off the walls
-    if (this.x + this.radius >= canvas.width || this.x - this.radius <= 0) {
-      this.speedX *= -1;
+    if (this.x + this.radius >= canvas.width) {
+      this.x = canvas.width - this.radius; // Move the ball inside the canvas
+      this.speedX *= -1; // Reverse the x-speed
+    } else if (this.x - this.radius <= 0) {
+      this.x = this.radius; // Move the ball inside the canvas
+      this.speedX *= -1; // Reverse the x-speed
     }
-    if (this.y + this.radius >= canvas.height || this.y - this.radius <= 0) {
-      this.speedY *= -1;
+  
+    if (this.y + this.radius >= canvas.height) {
+      this.y = canvas.height - this.radius; // Move the ball inside the canvas
+      this.speedY *= -1; // Reverse the y-speed
+    } else if (this.y - this.radius <= 0) {
+      this.y = this.radius; // Move the ball inside the canvas
+      this.speedY *= -1; // Reverse the y-speed
     }
   }
 
