@@ -7,8 +7,10 @@ document.body.appendChild(canvas);
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-class BouncingBall {
-  constructor(x, y, radius, speedX, speedY) {
+class BouncingBall 
+{
+  constructor(x, y, radius, speedX, speedY) 
+  {
     this.x = x;
     this.y = y;
     this.radius = radius;
