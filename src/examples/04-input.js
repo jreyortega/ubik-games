@@ -94,7 +94,7 @@ class Player {
 
   shoot(angle) {
     const bulletSpeed = 1000; // Adjust bullet speed as needed
-    const bullet = new Bullet(this.x, this.y, bulletSpeed, angle);
+    const bullet = new Bullet(this.x + this.width / 2, this.y + this.height / 2, bulletSpeed, angle);
     this.bullets.push(bullet);
   }
 }
