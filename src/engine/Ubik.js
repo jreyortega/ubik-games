@@ -1,5 +1,7 @@
 import Logger from './Logger';
+import Input from './Input';
 
+// Define the Ubik class
 class Ubik {
   constructor() {
     // Game loop
@@ -9,14 +11,18 @@ class Ubik {
     this.totalElapsed = 0; // seconds
     this.totalElapsedInSeconds = 0; // seconds
 
-    // Tools
+    /* Tools */
+    // Logger
     this.logger = new Logger();
     this.logger.info('Ubik constructor called');
+    // Input
+    this.input = new Input(this);
 
     // Custom update method overwritten by user
     this.update = () => {};
   }
 
+  // Start the game engine
   start() {
     this.isRunning = true;
     this.logger.info('Ubik engine starts');
@@ -24,6 +30,7 @@ class Ubik {
     this.frame();
   }
 
+  // Game loop
   frame() {
     // Check if the game is running
     if (!this.isRunning) {
@@ -51,4 +58,5 @@ class Ubik {
   }
 }
 
+// Export the Ubik class
 export default Ubik;
