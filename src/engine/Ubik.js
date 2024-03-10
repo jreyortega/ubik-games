@@ -1,23 +1,40 @@
+import * as THREE from 'three'
+
 import Logger from './Logger';
 import Input from './Input';
-
+import Camera from './Camera';
+import Renderer from './Renderer';
+import Window from './Window';
 // Define the Ubik class
 class Ubik {
   constructor() {
-    // Game loop
+    // GAME LOOP ------------------------------------
     this.startTime = Date.now();
     this.lastFrameTime = this.startTime;
     this.dt = 1 / 60;
     this.totalElapsed = 0; // seconds
     this.totalElapsedInSeconds = 0; // seconds
 
-    /* Tools */
+    //TOOLS ----------------------------------
     // Logger
     this.logger = new Logger();
     this.logger.info('Ubik constructor called');
     // Input
     this.input = new Input(this);
+    //Camera
+    this.camera = new Camera(this);
+    //Window
+    this.window = new Window(this);
+    //Scene
+    this.scene = new THREE.Scene();
+    //Renderer
+    this.renderer = new Renderer(this);
 
+    //EVENTS ------------------------------------
+    //Resizing event
+    this.window.addEventListener("resize", (e) => {this.resize(e)})
+
+    //METHODS ----------------------------------
     // Custom update method overwritten by user
     this.update = () => {};
   }
@@ -55,6 +72,13 @@ class Ubik {
     this.update(this.dt);
 
     // Rendering
+  }
+
+  //Used by resizing event
+  resize(e){
+    this.logger.debug('Resize event: ' + this.window.width +  ', ' + this.window.height);
+    this.camera.resize()
+    this.renderer.resize()
   }
 }
 
