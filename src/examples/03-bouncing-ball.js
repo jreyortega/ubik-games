@@ -7,10 +7,8 @@ document.body.appendChild(canvas);
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-class BouncingBall 
-{
-  constructor(x, y, radius, speedX, speedY) 
-  {
+class BouncingBall {
+  constructor(x, y, radius, speedX, speedY) {
     this.x = x;
     this.y = y;
     this.radius = radius;
@@ -22,7 +20,7 @@ class BouncingBall
     // Update position
     this.x += this.speedX * dt;
     this.y += this.speedY * dt;
-  
+
     // Bounce off the walls
     if (this.x + this.radius >= canvas.width) {
       this.x = canvas.width - this.radius; // Move the ball inside the canvas
@@ -31,7 +29,7 @@ class BouncingBall
       this.x = this.radius; // Move the ball inside the canvas
       this.speedX *= -1; // Reverse the x-speed
     }
-  
+
     if (this.y + this.radius >= canvas.height) {
       this.y = canvas.height - this.radius; // Move the ball inside the canvas
       this.speedY *= -1; // Reverse the y-speed
