@@ -43,6 +43,15 @@ class BouncingBall {
             this.y += this.speedY * dt;
             this.circle.position.set(this.x, this.y, 0);
         }
+        else{
+            
+            this.dead=false;
+            this.x=0;
+            this.y=0;
+            this.circle.position.set(this.x, this.y, 0);
+            ubik.scene.add(this.circle);
+            
+        }
     }
 }
 
