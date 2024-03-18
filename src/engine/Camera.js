@@ -38,4 +38,14 @@ export default class Camera {
         this.instance.aspect = this.window.aspectRatio;
         this.instance.updateProjectionMatrix();
     }
+
+    CertesianToIsometric(x, y) {
+
+        x=x-y;
+        y=(x+y)/2;
+
+        return x, y;    
+    }
+
+
 }
