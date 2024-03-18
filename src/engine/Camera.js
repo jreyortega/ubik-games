@@ -1,20 +1,33 @@
 import * as THREE from 'three';
 
 export default class Camera {
-    constructor(ubik) {
+    constructor(ubik, cameraType = 'orthographic') {
         this.logger = ubik.logger;
         this.logger.info('Camera constructor called');
 
         this.window = ubik.window;
         this.scene = ubik.scene;
 
-        // Create an instance of OrthographicCamera
-        this.instance = new THREE.OrthographicCamera(
-            -this.window.width,
-            this.window.width,
-            this.window.height,
-            -this.window.height
-        );
+        if (cameraType === 'orthographic') {
+            // Create an instance of OrthographicCamera
+            this.instance = new THREE.OrthographicCamera(
+                -this.window.width,
+                this.window.width,
+                this.window.height,
+                -this.window.height
+            );
+        } else if (cameraType === 'perspective') {
+            // Create an instance of PerspectiveCamera
+            this.instance = new THREE.PerspectiveCamera(
+                75, // Field of view
+                this.window.aspectRatio, // Aspect ratio
+                0.1, // Near plane
+                1000 // Far plane
+            );
+        } else {
+            // Throw an error if the camera type is unknown
+            throw new Error(`Unknown camera type: ${cameraType}`);
+        }
 
         // Set the position of the camera
         this.instance.position.set(0, 0, 125);
