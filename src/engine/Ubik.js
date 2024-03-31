@@ -4,9 +4,13 @@ import Input from './Input';
 import Window from './Window';
 import Renderer from './Renderer';
 import Camera from './Camera';
+import Mesh from './Mesh';
 
 class Ubik {
-    constructor() {
+    constructor(options = {}) {
+        // Options
+        const { cameraType = 'orthographic', fov = 75 } = options;
+
         // Game loop
         this.startTime = Date.now();
         this.lastFrameTime = this.startTime;
@@ -28,10 +32,13 @@ class Ubik {
         this.scene = new THREE.Scene();
 
         // Camera
-        this.camera = new Camera(this);
+        this.camera = new Camera(this, cameraType, fov);
 
         // Renderer
         this.renderer = new Renderer(this);
+
+        // Mesh
+        this.mesh = new Mesh(this);
 
         // Events
         this.window.addEventListener('resize', (e) => {
@@ -54,7 +61,7 @@ class Ubik {
     frame() {
         // Check if the game is running
         if (!this.isRunning) {
-            return; // Exit the frame loop if the game is not running
+            return;
         }
 
         // Ask the browser to call this method ASAP

@@ -14,6 +14,13 @@ export default class Input {
         this.mouseX = 0;
         this.mouseY = 0;
 
+        // Previous mouse position
+        this.prevMouseX = 0;
+        this.prevMouseY = 0;
+
+        // Timeout ID for resetting delta values
+        this.resetTimeoutId = null;
+
         // Add event listener for keydown event
         window.addEventListener('keydown', (event) => {
             this.pressedKeys[event.key] = true;
@@ -27,6 +34,9 @@ export default class Input {
         // Add event listener for mousedown event
         window.addEventListener('mousedown', () => {
             this.mouseClicked = true;
+            // Update previous mouse position
+            this.prevMouseX = this.mouseX;
+            this.prevMouseY = this.mouseY;
         });
 
         // Add event listener for mouseup event
@@ -36,16 +46,31 @@ export default class Input {
 
         // Add event listener for mousemove event
         window.addEventListener('mousemove', (event) => {
+            // Update previous mouse position
+            this.prevMouseX = this.mouseX;
+            this.prevMouseY = this.mouseY;
+
             // Get canvas bounding rectangle
             const canvasBounds = ubik.renderer.instance.domElement.getBoundingClientRect();
 
             // Calculate mouse position relative to canvas
-            this.mouseX = (event.clientX - canvasBounds.left) / canvasBounds.width * 2 - 1;
-            this.mouseY = -((event.clientY - canvasBounds.top) / canvasBounds.height * 2 - 1);
+            const mouseX = (event.clientX - canvasBounds.left) / canvasBounds.width * 2 - 1;
+            const mouseY = -((event.clientY - canvasBounds.top) / canvasBounds.height * 2 - 1);
 
             // Transform mouse position to real coordinates
-            this.mouseX = this.mouseX * ubik.window.width;
-            this.mouseY = this.mouseY * ubik.window.height;
+            this.mouseX = mouseX * ubik.window.width;
+            this.mouseY = mouseY * ubik.window.height;
+
+            // Calculate change in mouse position
+            const deltaX = this.mouseX - this.prevMouseX;
+            const deltaY = this.mouseY - this.prevMouseY;
+
+            // Reset delta values after 1 second if not updated
+            clearTimeout(this.resetTimeoutId);
+            this.resetTimeoutId = setTimeout(() => {
+                this.prevMouseX = this.mouseX;
+                this.prevMouseY = this.mouseY;
+            }, 100);
         });
     }
 
@@ -57,5 +82,13 @@ export default class Input {
     // Check if the mouse is currently clicked
     isMouseClicked() {
         return this.mouseClicked;
+    }
+
+    // Get the change in mouse position since the last frame
+    getMouseDelta() {
+        return {
+            deltaX: this.mouseX - this.prevMouseX,
+            deltaY: this.mouseY - this.prevMouseY
+        };
     }
 }
