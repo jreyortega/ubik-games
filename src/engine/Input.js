@@ -91,4 +91,12 @@ export default class Input {
             deltaY: this.mouseY - this.prevMouseY
         };
     }
+
+    // Get the current mouse position
+    getMousePosition() {
+        return {
+            x: this.mouseX,
+            y: this.mouseY
+        };
+    }
 }

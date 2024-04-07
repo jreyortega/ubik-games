@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
 
 export default class Camera {
     constructor(ubik, cameraType = 'orthographic', fov = 75) {
@@ -7,6 +8,7 @@ export default class Camera {
 
         this.window = ubik.window;
         this.scene = ubik.scene;
+        this.renderer = ubik.renderer;
 
         if (cameraType === 'orthographic') 
         {
@@ -19,6 +21,9 @@ export default class Camera {
             );
             // Set the position of the camera
             this.instance.position.set(0, 0, 125);
+            // Set the near and far planes
+            this.instance.near = -1000;
+            this.instance.far = 1000;
         } else if (cameraType === 'perspective') 
         {
             // Create an instance of PerspectiveCamera
@@ -46,6 +51,9 @@ export default class Camera {
             this.instance.rotation.y = Math.PI / 4;
             this.instance.rotation.x = Math.atan(-1 / Math.sqrt(2));
             this.instance.zoom = 20;
+            // Set the near and far planes
+            this.instance.near = -1000;
+            this.instance.far = 1000;
         } else 
         {
             // Throw an error if the camera type is unknown
@@ -57,6 +65,18 @@ export default class Camera {
 
         // Add the camera to the scene
         this.scene.add(this.instance);
+    }
+
+    // Add orbit controls to the camera
+    addOrbitControls() {
+        this.controls = new OrbitControls(this.instance, document.body);
+        this.controls.enableDamping = true;
+        this.controls.dampingFactor = 0.25;
+        this.controls.enableZoom = true;
+
+        // Adjust the speed of the orbit controls
+        this.controls.rotateSpeed = 0.025;
+        this.controls.zoomSpeed = 1;
     }
 
     // Resize the camera based on the window aspect ratio
@@ -88,5 +108,11 @@ export default class Camera {
 
         this.instance.aspect = this.window.aspectRatio;
         this.instance.updateProjectionMatrix();
+    }
+
+    frame() {
+        if (this.controls && this.controls.enabled) {
+            this.controls.update();
+        }
     }
 }
