@@ -4,6 +4,10 @@ import * as THREE from 'three';
 /************** ISOMETRIC **************/
 const ubik = new Ubik({ cameraType: 'isometric' });
 
+//Light
+
+
+
 // Box mesh
 const boxMesh = ubik.mesh.createFromGeometry(
     new THREE.BoxGeometry(10, 10, 10),

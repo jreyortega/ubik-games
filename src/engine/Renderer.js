@@ -18,6 +18,8 @@ export default class Renderer {
         // Set the size and pixel ratio of the renderer
         this.instance.setSize(this.window.width, this.window.height);
         this.instance.setPixelRatio(this.window.pixelRatio);
+
+        this.instance.shadowMap.enabled = true; //For shadows
     }
 
     // Resize the renderer based on the window size and pixel ratio

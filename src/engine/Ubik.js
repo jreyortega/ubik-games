@@ -5,6 +5,7 @@ import Window from './Window';
 import Renderer from './Renderer';
 import Camera from './Camera';
 import Mesh from './Mesh';
+import Light from './Light';
 
 class Ubik {
     constructor(options = {}) {
@@ -39,6 +40,10 @@ class Ubik {
 
         // Mesh
         this.mesh = new Mesh(this);
+
+        //Light
+
+        this.light = new Light(this)
 
         // Events
         this.window.addEventListener('resize', (e) => {
