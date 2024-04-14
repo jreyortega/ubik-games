@@ -19,6 +19,7 @@ export default class Renderer {
         this.instance.setSize(this.window.width, this.window.height);
         this.instance.setPixelRatio(this.window.pixelRatio);
 
+        // Enable shadows
         this.instance.shadowMap.enabled = true; //For shadows
     }
 
