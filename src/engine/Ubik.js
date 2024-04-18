@@ -6,6 +6,7 @@ import Renderer from './Renderer';
 import Camera from './Camera';
 import Mesh from './Mesh';
 import Light from './Light';
+import AssetManager from './AssetManager';
 
 class Ubik {
     constructor(options = {}) {
@@ -42,8 +43,10 @@ class Ubik {
         this.mesh = new Mesh(this);
 
         //Light
-
         this.light = new Light(this)
+
+        // Asset manager
+        this.assets = new AssetManager(this);
 
         // Events
         this.window.addEventListener('resize', (e) => {
@@ -51,7 +54,7 @@ class Ubik {
         });
 
         // Custom update method overwritten by user
-        this.update = () => {};
+        this.update = () => { };
     }
 
     // Start the game engine
