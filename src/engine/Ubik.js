@@ -7,6 +7,7 @@ import Camera from './Camera';
 import Mesh from './Mesh';
 import Light from './Light';
 import AssetManager from './AssetManager';
+import Physics from './Physics';
 
 class Ubik {
     constructor(options = {}) {
@@ -48,13 +49,39 @@ class Ubik {
         // Asset manager
         this.assets = new AssetManager(this);
 
+        //Physics
+        this.physics = new  Physics(this);
+
         // Events
         this.window.addEventListener('resize', (e) => {
             this.resize(e);
         });
 
+        this.objects = [];
+
         // Custom update method overwritten by user
         this.update = () => { };
+    }
+
+    createObject() {
+        let object = new THREE.Object3D();
+        this.logger.info('Created object ' + object.name + ' #' + object.id);
+        this.objects.push(object);
+    
+        return object;
+      }
+    
+    getObjects() {
+    return this.objects;
+    }
+
+    getObjectById(id) {
+    return this.objects.find((object) => object.id == id);
+    }
+
+    addComponentToObject(object, componentName, data) {
+    data.objectID = object.id;
+    object[componentName] = data;
     }
 
     // Start the game engine
@@ -87,6 +114,16 @@ class Ubik {
         // Custom update
         this.update(this.dt);
 
+        for (const object of this.objects) 
+        {
+            if (object.rigidbody)
+            {
+                object.rigidbody.position.copy(object.position)
+                object.rigidbody.quaternion.copy(object.quaternion)
+            }
+        }
+
+        this.physics.Update(this.dt,this.objects)
         // Rendering
         this.renderer.frame();
     }

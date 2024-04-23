@@ -23,5 +23,6 @@ export default [
         name:'model',
         type: 'gltf',
         path: '../models/model.gltf'
-    }
+    },
+
 ]    

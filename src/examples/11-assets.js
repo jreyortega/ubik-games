@@ -29,6 +29,7 @@ boxMesh.position.set(10, 5, 0);
 // 3D model
 let model = null;
 
+
 // Wait for assets to be loaded
 ubik.assets.onAssetsLoaded((e) => {
     // Set the color texture
@@ -44,6 +45,7 @@ ubik.assets.onAssetsLoaded((e) => {
     model = ubik.assets.get('model').scene;
     model.position.set(-10, 0, 0);
     ubik.scene.add(model);
+
 });
 
 // Add orbit controls
