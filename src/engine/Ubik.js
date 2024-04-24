@@ -48,6 +48,9 @@ class Ubik {
         // Asset manager
         this.assets = new AssetManager(this);
 
+        // Objects
+        this.objects = [];
+
         // Events
         this.window.addEventListener('resize', (e) => {
             this.resize(e);
@@ -97,6 +100,31 @@ class Ubik {
         // Propagate the event
         this.camera.resize();
         this.renderer.resize();
+    }
+
+    // Create a new object
+    createObject() {
+        const object = new THREE.Object3D();
+        this.logger.debug('Created object' + object.name + ' with id ' + object.id);
+        this.objects.push(object);
+        this.scene.add(object);
+        return object;
+    }
+
+    // Get objects
+    getObjects() {
+        return this.objects;
+    }
+
+    // Get an object by ID
+    getObjectById(id) {
+        return this.objects.find(object => object.id === id);
+    }
+
+    // Add component to object
+    addComponent(object, componentName, componentData) {
+        componentData.objectID = object.id;
+        object[componentName] = componentData;
     }
 }
 
