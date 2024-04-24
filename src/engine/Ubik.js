@@ -7,6 +7,7 @@ import Camera from './Camera';
 import Mesh from './Mesh';
 import Light from './Light';
 import AssetManager from './AssetManager';
+import Physics from './Physics';
 
 class Ubik {
     constructor(options = {}) {
@@ -42,11 +43,14 @@ class Ubik {
         // Mesh
         this.mesh = new Mesh(this);
 
-        //Light
+        // Light
         this.light = new Light(this)
 
         // Asset manager
         this.assets = new AssetManager(this);
+
+        // Physics
+        this.physics = new Physics(this);
 
         // Objects
         this.objects = [];
@@ -90,8 +94,22 @@ class Ubik {
         // Custom update
         this.update(this.dt);
 
+        // Physics
+        for (const object of this.objects) {
+            if (object.rigidBody) {
+                object.mesh.position.copy(object.rigidBody.position);
+                object.mesh.quaternion.copy(object.rigidBody.quaternion);
+            }
+        }
+
+        // Physics
+        this.physics.update(this.dt, this.objects);
+
         // Rendering
         this.renderer.frame();
+
+        // Update camera
+        this.camera.frame();
     }
 
     // Resize the game
