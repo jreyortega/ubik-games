@@ -12,6 +12,7 @@ export default class Physics {
         this.world.step(1 / 60, dt, 3);
         for (const object of objects) {
             if (object.rigidBody) {
+                // Update the mesh's position and rotation
                 object.mesh.position.copy(object.rigidBody.position);
                 object.mesh.quaternion.copy(object.rigidBody.quaternion);
 

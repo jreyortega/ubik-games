@@ -94,6 +94,17 @@ class Ubik {
         // Custom update
         this.update(this.dt);
 
+        // Update object's position and rotation if changed in update method
+        for (const object of this.objects) {
+            // Update mesh
+            object.mesh.position.copy(object.position);
+            object.mesh.quaternion.copy(object.quaternion);
+
+            // Update rigid body
+            object.rigidBody.position.copy(object.position);
+            object.rigidBody.quaternion.copy(object.quaternion);
+        }
+
         // Physics
         this.physics.update(this.dt, this.objects);
 

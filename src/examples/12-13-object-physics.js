@@ -33,7 +33,7 @@ ubik.addComponent(
         shape: new CANNON.Sphere(4)
     })
 );
-ball.rigidBody.position.set(0, 40, 0); // Set the position of the sphere
+ball.position.set(0, 40, 0); // Set the position of the sphere
 ball.rigidBody.velocity.set(0, 0, 5); // Set the velocity of the sphere
 
 // Ground
@@ -56,7 +56,7 @@ ubik.addComponent(
         shape: new CANNON.Plane()
     })
 );
-ground.rigidBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2); // Set the rotation of the ground
+ground.rotation.x = -Math.PI / 2; // Rotate the ground
 
 // Add orbit controls
 ubik.camera.addOrbitControls();
