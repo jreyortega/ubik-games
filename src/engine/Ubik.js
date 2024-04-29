@@ -95,14 +95,6 @@ class Ubik {
         this.update(this.dt);
 
         // Physics
-        for (const object of this.objects) {
-            if (object.rigidBody) {
-                object.mesh.position.copy(object.rigidBody.position);
-                object.mesh.quaternion.copy(object.rigidBody.quaternion);
-            }
-        }
-
-        // Physics
         this.physics.update(this.dt, this.objects);
 
         // Rendering
