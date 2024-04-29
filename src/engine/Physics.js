@@ -14,6 +14,10 @@ export default class Physics {
             if (object.rigidBody) {
                 object.mesh.position.copy(object.rigidBody.position);
                 object.mesh.quaternion.copy(object.rigidBody.quaternion);
+
+                // Update the object's position and rotation    
+                object.position.copy(object.rigidBody.position);
+                object.quaternion.copy(object.rigidBody.quaternion);
             }
         }
     }
