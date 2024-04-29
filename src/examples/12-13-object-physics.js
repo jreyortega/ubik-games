@@ -34,6 +34,7 @@ ubik.addComponent(
     })
 );
 ball.rigidBody.position.set(0, 40, 0); // Set the position of the sphere
+ball.rigidBody.velocity.set(0, 0, 5); // Set the velocity of the sphere
 
 // Ground
 const ground = ubik.createObject();
