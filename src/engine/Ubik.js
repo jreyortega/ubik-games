@@ -8,6 +8,7 @@ import Mesh from './Mesh';
 import Light from './Light';
 import AssetManager from './AssetManager';
 import Physics from './Physics';
+import Forces from './Forces';
 
 class Ubik {
     constructor(options = {}) {
@@ -54,6 +55,9 @@ class Ubik {
 
         // Objects
         this.objects = [];
+
+        // Forces
+        this.forces = new Forces();
 
         // Events
         this.window.addEventListener('resize', (e) => {
