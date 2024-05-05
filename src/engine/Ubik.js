@@ -101,12 +101,16 @@ class Ubik {
         // Update object's position and rotation if changed in update method
         for (const object of this.objects) {
             // Update mesh
-            object.mesh.position.copy(object.position);
-            object.mesh.quaternion.copy(object.quaternion);
+            if (object.mesh) {
+                object.mesh.position.copy(object.position);
+                object.mesh.quaternion.copy(object.quaternion);
+            }
 
             // Update rigid body
-            object.rigidBody.position.copy(object.position);
-            object.rigidBody.quaternion.copy(object.quaternion);
+            if (object.rigidBody) {
+                object.rigidBody.position.copy(object.position);
+                object.rigidBody.quaternion.copy(object.quaternion);
+            }
         }
 
         // Physics
