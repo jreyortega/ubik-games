@@ -11,16 +11,17 @@ export default class Physics {
     update(dt, objects) {
         this.world.step(1 / 60, dt, 3);
         for (const object of objects) {
-
-            const velocity_module = (object.rigidBody.velocity).length();
-
-            if (velocity_module < 0.001) {
-                object.rigidBody.velocity.x = 0;
-                object.rigidBody.velocity.y = 0;
-                object.rigidBody.velocity.z = 0;
-            }
-
             if (object.rigidBody) {
+                // Get the velocity module
+                const velocity_module = (object.rigidBody.velocity).length();
+
+                // Stop the object if the velocity is too low
+                if (velocity_module < 0.001) {
+                    object.rigidBody.velocity.x = 0;
+                    object.rigidBody.velocity.y = 0;
+                    object.rigidBody.velocity.z = 0;
+                }
+
                 // Update the mesh's position and rotation
                 object.mesh.position.copy(object.rigidBody.position);
                 object.mesh.quaternion.copy(object.rigidBody.quaternion);

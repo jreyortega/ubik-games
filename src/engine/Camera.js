@@ -13,7 +13,7 @@ export default class Camera {
         if (cameraType === 'orthographic') {
             // Set up orthographic camera for 2D games
             const aspect = this.window.width / this.window.height;
-            const zoom = 100;
+            const zoom = 40;
             this.instance = new THREE.OrthographicCamera(
                 -zoom * aspect,
                 zoom * aspect,
@@ -97,7 +97,7 @@ export default class Camera {
     // Resize the orthographic camera
     resizeOrthographicCamera() {
         const aspect = this.window.width / this.window.height;
-        const zoom = 100;
+        const zoom = 40;
 
         // Update the camera's view volume
         this.instance.left = -zoom * aspect;
