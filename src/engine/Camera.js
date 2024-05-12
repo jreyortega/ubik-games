@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 export default class Camera {
     constructor(ubik, cameraType = 'orthographic', fov = 75) {
@@ -10,22 +10,24 @@ export default class Camera {
         this.scene = ubik.scene;
         this.renderer = ubik.renderer;
 
-        if (cameraType === 'orthographic') 
-        {
-            // Create an instance of OrthographicCamera
+        if (cameraType === 'orthographic') {
+            // Set up orthographic camera for 2D games
+            const aspect = this.window.width / this.window.height;
+            const zoom = 100;
             this.instance = new THREE.OrthographicCamera(
-                -this.window.width,
-                this.window.width,
-                this.window.height,
-                -this.window.height
+                -zoom * aspect,
+                zoom * aspect,
+                zoom,
+                -zoom,
+                1,
+                1000
             );
             // Set the position of the camera
             this.instance.position.set(0, 0, 125);
             // Set the near and far planes
             this.instance.near = -1000;
             this.instance.far = 1000;
-        } else if (cameraType === 'perspective') 
-        {
+        } else if (cameraType === 'perspective') {
             // Create an instance of PerspectiveCamera
             this.instance = new THREE.PerspectiveCamera(
                 fov, // Field of view
@@ -35,14 +37,13 @@ export default class Camera {
             );
             // Set the position of the camera
             this.instance.position.set(0, 0, 125);
-        } else if (cameraType === 'isometric') 
-        {
+        } else if (cameraType === 'isometric') {
             // Create an instance of OrthographicCamera
             this.instance = new THREE.OrthographicCamera(
                 -this.window.width,
                 this.window.width,
                 this.window.height,
-                -this.window.height,
+                -this.window.height
             );
             // Set the camera position and rotation for isometric view
             this.instance.position.set(100, 100, 100);
@@ -54,8 +55,7 @@ export default class Camera {
             // Set the near and far planes
             this.instance.near = -1000;
             this.instance.far = 1000;
-        } else 
-        {
+        } else {
             // Throw an error if the camera type is unknown
             throw new Error(`Unknown camera type: ${cameraType}`);
         }
@@ -96,17 +96,19 @@ export default class Camera {
 
     // Resize the orthographic camera
     resizeOrthographicCamera() {
+        const aspect = this.window.width / this.window.height;
+        const zoom = 100;
+
         // Update the camera's view volume
-        this.instance.left = -this.window.width;
-        this.instance.right = this.window.width;
-        this.instance.top = this.window.height;
-        this.instance.bottom = -this.window.height;
+        this.instance.left = -zoom * aspect;
+        this.instance.right = zoom * aspect;
+        this.instance.top = zoom;
+        this.instance.bottom = -zoom;
 
         // Ensure the near and far planes remain unchanged
         this.instance.near = -1000;
         this.instance.far = 1000;
 
-        this.instance.aspect = this.window.aspectRatio;
         this.instance.updateProjectionMatrix();
     }
 
