@@ -79,7 +79,7 @@ class Player {
     update(dt) {
         // Vertical movement
         if (ubik.input.isKeyPressed('ArrowUp')){
-            const forceDirection = new CANNON.Vec3(0, this.thrust, 0);
+            const forceDirection = new CANNON.Vec3(0, 2 * this.thrust, 0);
             // Get the current orientation of the spaceship
             const quaternion = this.spaceship.rigidBody.quaternion;
             // Rotate the force direction
