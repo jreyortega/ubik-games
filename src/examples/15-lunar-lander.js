@@ -77,6 +77,9 @@ class Player {
     }
 
     update(dt) {
+
+        
+
         // Vertical movement
         if (ubik.input.isKeyPressed('ArrowUp')){
             const forceDirection = new CANNON.Vec3(0, this.thrust, 0);
@@ -90,9 +93,9 @@ class Player {
     
         // Torque
         if (ubik.input.isKeyPressed('ArrowRight')) {
-            this.spaceship.rigidBody.applyTorque(new CANNON.Vec3(0, 0, -10 * this.thrust));
+            this.spaceship.rigidBody.applyTorque(new CANNON.Vec3(0, 0, -20 * this.thrust));
         } else if (ubik.input.isKeyPressed('ArrowLeft')) {
-            this.spaceship.rigidBody.applyTorque(new CANNON.Vec3(0, 0, 10 * this.thrust));
+            this.spaceship.rigidBody.applyTorque(new CANNON.Vec3(0, 0, 20 * this.thrust));
         }
 
         // Collision detection
@@ -111,12 +114,16 @@ class Player {
             this.spaceship.rigidBody.velocity.set(0, 0, 0);
             this.spaceship.rigidBody.angularVelocity.set(0, 0, 0);
             this.spaceship.quaternion.set(0, 0, 0, 1);
+
+            
         }
     }
 }
 
 // Instantiate player
-const player = new Player(0, 0, 10, ship);
+const player = new Player(0, 0, 20, ship);
+
+
 
 // Update instructions
 ubik.update = (dt) => {
