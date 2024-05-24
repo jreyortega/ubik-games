@@ -33,6 +33,7 @@ export default class AssetManager extends THREE.EventDispatcher {
                 });
             } else if (source.type === 'texture') {
                 // Load texture file using textureLoader
+          
                 this.loaders.textureLoader.load(source.path, (file) => {
                     this.sourceLoaded(source, file);
                 });

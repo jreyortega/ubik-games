@@ -14,7 +14,7 @@ const ambientLight = ubik.light.createAmbient('white', 2);
 ubik.scene.add(ambientLight);
 
 // Add orbit controls
-ubik.camera.addOrbitControls();
+//ubik.camera.addOrbitControls();
 
 // Create spaceship
 const ship = ubik.createObject();
