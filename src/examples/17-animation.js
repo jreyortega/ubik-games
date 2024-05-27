@@ -325,5 +325,6 @@ ubik.update = (dt) => {
     collisionAvoidance(enemyInstances);
 }
 
+
 // Start the engine
 ubik.start();
