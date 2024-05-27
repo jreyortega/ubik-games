@@ -24,6 +24,7 @@ ubik.addComponent(
         new THREE.MeshStandardMaterial({ color: 'red' })
     )
 );
+
 // Add rigid body component to the sphere object
 ubik.addComponent(
     ball,
@@ -57,6 +58,7 @@ ubik.addComponent(
     })
 );
 ground.rotation.x = -Math.PI / 2; // Rotate the ground
+
 
 // Add orbit controls
 ubik.camera.addOrbitControls();

@@ -3,6 +3,7 @@ import * as CANNON from 'cannon-es';
 import Ubik from '../engine/Ubik.js';
 import sources from './sources-collisions.js';
 
+
 // Create a new Ubik instance
 const ubik = new Ubik({ cameraType: 'orthographic' });
 ubik.physics.world.gravity.set(0, -9.82, 0); // Set gravity
