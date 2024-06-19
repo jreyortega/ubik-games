@@ -48,6 +48,27 @@ console.log("character-------------", portal);
 
 const Portal_1 = new Portal(portal, ubik);
 
+// Collision avoidance function for enemies
+function collisionAvoidance(enemies) {
+    const minDistance = 1; // Minimum distance between enemies
+    for (let i = 0; i < enemies.length; i++) {
+        for (let j = i + 1; j < enemies.length; j++) {
+            const speed = 0.1;
+            const dx = enemies[j].x - enemies[i].x;
+            const dy = enemies[j].y - enemies[i].y;
+            const distance = Math.sqrt(dx ** 2 + dy ** 2);
+            if (distance < minDistance) {
+                const normalizedDx = dx / distance;
+                const normalizedDy = dy / distance;
+                enemies[i].x -= normalizedDx * speed;
+                enemies[i].y -= normalizedDy * speed;
+                enemies[j].x += normalizedDx * speed;
+                enemies[j].y += normalizedDy * speed;
+            }
+        }
+    }
+}
+
 // Update function
 ubik.update = (dt) => {
     ubik.physics.update(dt, ubik.objects); // Update physics
@@ -56,6 +77,7 @@ ubik.update = (dt) => {
     enemies.forEach((enemy, index) => {
         enemy.update(dt);
     });
+    collisionAvoidance(enemies);
 };
 
 ubik.start();
