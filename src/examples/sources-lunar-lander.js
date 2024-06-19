@@ -13,5 +13,6 @@ export default [
         name:'background',
         type: 'texture',
         path: '../assets/background/stars.png'
-    }
+    },
+    
 ]    

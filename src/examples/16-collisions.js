@@ -61,18 +61,13 @@ class Player {
     }
 }
 
-class Enemies {
-    constructor() {
-        this.enemie = [];
-    }
+class Enemy {
+    constructor(x, y, enemy) {
+        this.x = x;
+        this.y = y;
 
-    update(dt) {
-
-        // Vertical movement
-        
-    }
 }
-
+}
 // Instantiate player
 const player1 = new Player(0, 0, player);
 const enemies= new Enemies();
