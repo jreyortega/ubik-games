@@ -11,6 +11,7 @@ export default class Player {
         this.animationStarted = false;
         this.animationTimeline = null;
         this.currentDirection = null; // Track the current direction of the player
+        this.life = 100; // Player life
 
         // Light
         this.pointLightCharacter = ubik.light.createPoint('white', 2000);
@@ -25,6 +26,12 @@ export default class Player {
 
         this.ubik.scene.add(this.pointLightCharacter);
         this.ubik.scene.add(this.specificLightCharacter);
+
+        // Reference to the camera
+        this.camera = ubik.camera;
+
+        // Set initial camera position and zoom level
+        this.updateCamera();
     }
 
     update(dt) {
@@ -69,14 +76,21 @@ export default class Player {
         // Update character position
         this.character.position.set(this.x, this.y, 1);
 
-        // Update character light position (uncomment if needed)
+        // Update character light position
         this.pointLightCharacter.position.set(this.x, this.y, 10);
         this.specificLightCharacter.position.set(this.x, this.y, 9);
 
+        // Update the camera position and zoom level
+        this.updateCamera();
+
         // Update HUD (uncomment if needed)
-        // document.getElementById('life').innerText = `Life: ${this.life}`;
+        document.getElementById('life').innerText = `Life: ${this.life}`;
     }
 
+    updateCamera() {
+        // Set the camera to follow the player
+        this.camera.follow({ x: this.x, y: this.y }, { x: 0, y: 0, z: 125 }, 5); // Adjust offset and zoom as needed
+    }
 
     startWalkingAnimation(direction) {
         let animationFunction;

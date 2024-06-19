@@ -117,4 +117,16 @@ export default class Camera {
             this.controls.update();
         }
     }
+
+    // Method to follow a target
+    follow(target, offset = { x: 0, y: 0, z: 125 }, zoom = 40) {
+        if (this.instance instanceof THREE.OrthographicCamera) {
+            this.instance.position.set(target.x + offset.x, target.y + offset.y, offset.z);
+            this.instance.zoom = zoom;
+            this.instance.updateProjectionMatrix();
+        } else if (this.instance instanceof THREE.PerspectiveCamera) {
+            this.instance.position.set(target.x + offset.x, target.y + offset.y, offset.z);
+            this.instance.updateProjectionMatrix();
+        }
+    }
 }

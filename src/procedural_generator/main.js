@@ -17,9 +17,6 @@ ubik.physics.world.gravity.set(0, -9.82, 0);
 const ambientLight = ubik.light.createAmbient('white', 0.0025);
 ubik.scene.add(ambientLight);
 
-// Add orbit controls
-ubik.camera.addOrbitControls();
-
 // Generate dungeon
 const tileSize = 2;
 const dungeonGenerator = new CorridorFirstDungeonGenerator({ x: 0, y: 0 }, 100, 3, true);

@@ -14,3 +14,20 @@ canvas {
     left: 0;
     outline: none;
 }
+
+#hud {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: black;
+    color: rgb(255, 255, 255);
+    font-family: 'Press Start 2P', cursive;
+    font-size: 20px;
+    padding: 10px;
+    border: 2px solid rgb(255, 255, 255);
+    z-index: 1000;
+}
+
+#life {
+    margin: 0;
+}
