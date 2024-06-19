@@ -11,6 +11,7 @@ export default class Player {
         this.animationStarted = false;
         this.animationTimeline = null;
         this.currentDirection = null; // Track the current direction of the player
+        this.lastDirection = null; // Track the last direction of the player
         this.life = 100; // Player life
 
         // Light
@@ -59,6 +60,9 @@ export default class Player {
             newDirection = 'right';
             isMoving = true;
         }
+        if(this.ubik.input.isKeyPressed(' ')){
+            this.startAttackingAnimationLeft();
+        }
 
         if (isMoving) {
             this.isWalking = true;
@@ -69,6 +73,7 @@ export default class Player {
             }
         } else {
             this.isWalking = false;
+            this.lastDirection = this.currentDirection;
             this.currentDirection = null;
             this.stopWalkingAnimation();
         }
@@ -89,7 +94,7 @@ export default class Player {
 
     updateCamera() {
         // Set the camera to follow the player
-        this.camera.follow({ x: this.x, y: this.y }, { x: 0, y: 0, z: 125 }, 5); // Adjust offset and zoom as needed
+        this.camera.follow({ x: this.x, y: this.y }, { x: 0, y: 0, z: 125 }, 2.5); // Adjust offset and zoom as needed
     }
 
     startWalkingAnimation(direction) {
@@ -194,4 +199,24 @@ export default class Player {
             this.animationStarted = false;
         }
     }
+
+    startAttackingAnimationLeft() {
+        this.animationTimeline = gsap.to({}, {
+            duration: 0.1,
+            repeat: 1,
+            onUpdate: () => {
+                const progress = this.animationTimeline.time() % 0.1;
+                const frameIndex = progress < 0.05 ? 1 : 2;
+                const textureName = `player_attacking_right`;
+                const texture = this.ubik.assets.get(textureName);
+
+                if (texture) {
+                    this.character.mesh.material.map = texture;
+                    this.character.mesh.material.needsUpdate = true;
+                }
+            }
+        });
+    }
+
+    
 }

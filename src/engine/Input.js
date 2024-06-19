@@ -10,6 +10,9 @@ export default class Input {
         // Initialize a boolean variable to track mouse click
         this.mouseClicked = false;
 
+        // Space bar state
+        this.spaceBarPressed = false;
+
         // Mouse position
         this.mouseX = 0;
         this.mouseY = 0;
@@ -24,11 +27,17 @@ export default class Input {
         // Add event listener for keydown event
         window.addEventListener('keydown', (event) => {
             this.pressedKeys[event.key] = true;
+            if (event.key === ' ') {
+                this.spaceBarPressed = true;
+            }
         });
 
         // Add event listener for keyup event
         window.addEventListener('keyup', (event) => {
             this.pressedKeys[event.key] = false;
+            if (event.key === ' ') {
+                this.spaceBarPressed = false;
+            }
         });
 
         // Add event listener for mousedown event
@@ -98,5 +107,10 @@ export default class Input {
             x: this.mouseX,
             y: this.mouseY
         };
+    }
+
+    // Check if the space bar is currently pressed
+    isSpaceBarPressed() {
+        return this.spaceBarPressed;
     }
 }
