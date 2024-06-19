@@ -1,0 +1,17 @@
+{
+    "name": "ubik-games",
+    "version": "1.0.0",
+    "description": "Ubik Games",
+    "author": "Ubik Games",
+    "scripts": {
+        "dev": "vite"
+    },
+    "dependencies": {
+        "cannon-es": "^0.20.0",
+        "gsap": "^3.12.5",
+        "three": "^0.161.0"
+    },
+    "devDependencies": {
+        "vite": "^5.1.4"
+    }
+}
