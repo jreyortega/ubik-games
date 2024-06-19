@@ -14,7 +14,7 @@ const ubik = new Ubik({ cameraType: 'orthographic' });
 ubik.physics.world.gravity.set(0, -9.82, 0);
 
 // // Light
-const ambientLight = ubik.light.createAmbient('white', 2);
+const ambientLight = ubik.light.createAmbient('white', 0.0025);
 ubik.scene.add(ambientLight);
 
 // Add orbit controls

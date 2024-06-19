@@ -11,6 +11,20 @@ export default class Player {
         this.animationStarted = false;
         this.animationTimeline = null;
         this.currentDirection = null; // Track the current direction of the player
+
+        // Light
+        this.pointLightCharacter = ubik.light.createPoint('white', 2000);
+        this.pointLightCharacter.position.set(x, y, 10);
+        this.pointLightCharacter.distance = 20;
+        this.pointLightCharacter.decay = 4;
+
+        this.specificLightCharacter = ubik.light.createPoint('white', 7000);
+        this.specificLightCharacter.position.set(x, y, 9);
+        this.specificLightCharacter.distance = 10;
+        this.specificLightCharacter.decay = 4;
+
+        this.ubik.scene.add(this.pointLightCharacter);
+        this.ubik.scene.add(this.specificLightCharacter);
     }
 
     update(dt) {
@@ -56,7 +70,8 @@ export default class Player {
         this.character.position.set(this.x, this.y, 1);
 
         // Update character light position (uncomment if needed)
-        // pointLightCharacter.position.set(this.x, this.y, 0);
+        this.pointLightCharacter.position.set(this.x, this.y, 10);
+        this.specificLightCharacter.position.set(this.x, this.y, 9);
 
         // Update HUD (uncomment if needed)
         // document.getElementById('life').innerText = `Life: ${this.life}`;
