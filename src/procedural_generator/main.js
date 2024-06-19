@@ -39,18 +39,19 @@ ubik.addComponent(
 //--------Inicializción del objeto portal------------
 const portal = ubik.createObject();
 
-//--------Inicialización de los objetos enemigos---------
-const enemies = [];
-
 //--------Inicialización del objeto llave--------
 const key = ubik.createObject();
 
-inicializar_mapa(dungeon, tileSize, ubik, sources, character, enemies, portal, key, THREE, CANNON);
+const enemyPositions = inicializar_mapa(dungeon, tileSize, ubik, sources, character, portal, key, THREE, CANNON);
 
 console.log("character-------------", portal);
 
 const player = new Player(0, 0, character, ubik);
 const Portal_1 = new Portal(portal, ubik);
+
+// Now you can use enemyPositions as needed
+console.log('Enemy Positions:', enemyPositions);
+
 
 ubik.update = (dt) => {
     ubik.physics.update(dt, ubik.objects); // Actualizar física

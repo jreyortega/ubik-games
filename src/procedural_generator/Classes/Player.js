@@ -89,7 +89,7 @@ export default class Player {
 
     updateCamera() {
         // Set the camera to follow the player
-        this.camera.follow({ x: this.x, y: this.y }, { x: 0, y: 0, z: 125 }, 5); // Adjust offset and zoom as needed
+        this.camera.follow({ x: this.x, y: this.y }, { x: 0, y: 0, z: 125 }, 1); // Adjust offset and zoom as needed
     }
 
     startWalkingAnimation(direction) {

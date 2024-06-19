@@ -30,7 +30,7 @@ export default class Portal{
                 const textureName = `portal_frame${frameIndex}`;
                 const texture = this.ubik.assets.get(textureName);
 
-                if (texture) {
+                if (texture && this.portal.mesh) {
                     this.portal.mesh.material.map = texture;
                     this.portal.mesh.material.needsUpdate = true;
                 }

@@ -1,7 +1,4 @@
-import Player from './Classes/Player.js'
-import Enemy from './Classes/Enemy.js'
-
-export function inicializar_mapa(dungeon,tileSize,ubik,sources,character,enemies,portal,key,THREE,CANNON){
+export function inicializar_mapa(dungeon, tileSize, ubik, sources, character, portal, key, THREE, CANNON) {
 
 
     function isPositionOccupied(x, y) {
@@ -9,17 +6,17 @@ export function inicializar_mapa(dungeon,tileSize,ubik,sources,character,enemies
         return occupiedPositions.has(posKey);
     }
 
-    const occupiedPositions= new Set();
+    const occupiedPositions = new Set();
 
     //###################################CREACIÓN DE LA MAZMORRA##################################
-    var euclidean_distance=0
-    var mejor_euclidean_distance=0
-    var t=0
-    var number_enemies=0
-    var position_enemies=[]
+    var euclidean_distance = 0
+    var mejor_euclidean_distance = 0
+    var t = 0
+    var number_enemies = 0
+    var position_enemies = []
     const slabs = [];
-    var doorPosition=[]
-    var keyPosition=[]
+    var doorPosition = []
+    var keyPosition = []
 
     //====================Colocación de slabs===================
     dungeon.forEach(position => {
@@ -32,76 +29,56 @@ export function inicializar_mapa(dungeon,tileSize,ubik,sources,character,enemies
         occupiedPositions.add(posKey);
 
         //-----------Posición de los enemigos------------
-        if(t==50 && number_enemies<5)
-        {
+        if (t == 50 && number_enemies < 5) {
             position_enemies.push([position.x * tileSize, position.y * tileSize])
-            t=0
+            t = 0
         }
 
         //-----------Posición Puerta----------(mas alejada de la pos del jugador)
-        euclidean_distance=(Math.sqrt(position.x*position.x+position.y*position.y))
+        euclidean_distance = (Math.sqrt(position.x * position.x + position.y * position.y))
 
-        if(euclidean_distance>mejor_euclidean_distance)
-        {
-            mejor_euclidean_distance=euclidean_distance
-            doorPosition=[position.x*tileSize,position.y*tileSize]
+        if (euclidean_distance > mejor_euclidean_distance) {
+            mejor_euclidean_distance = euclidean_distance
+            doorPosition = [position.x * tileSize, position.y * tileSize]
         }
 
-        t=t+1
+        t = t + 1
     });
 
     //--------Posicion objeto portal------------
-    portal.position.set(doorPosition[0],doorPosition[1],0);
-
-    //--------Inicialización de los objetos enemigos---------
-
-    for (let i = 0; i < position_enemies.length; i++) {
-        const enemy = ubik.createObject();
-        enemy.position.set(position_enemies[i][0],position_enemies[i][1],0)
-        enemies.push(enemy);
-    }
-
-
-    // const enemy1 = new Enemy(elementosAleatorios[0].x, elementosAleatorios[0], enemies[0]);
-    // const enemy2 = new Enemy(elementosAleatorios[1].x, elementosAleatorios[1].y, enemies[1]);
-    // const enemy3 = new Enemy(elementosAleatorios[2].x, elementosAleatorios[2].y, enemies[2]);
-    // const enemy4 = new Enemy(elementosAleatorios[3].x, elementosAleatorios[3].y, enemies[3]);
-    // const enemy5 = new Enemy(elementosAleatorios[4].x, elementosAleatorios[4].y, enemies[4]);
-
+    portal.position.set(doorPosition[0], doorPosition[1], 0);
 
     //==============Rellenar huecos de la mazmorra==================
-    var euclidean_distance_portal=0
-    var euclidean_distance_player=0
-    var average_euclidean_distance=0
-    mejor_euclidean_distance=0
+    var euclidean_distance_portal = 0
+    var euclidean_distance_player = 0
+    var average_euclidean_distance = 0
+    mejor_euclidean_distance = 0
 
-    slabs.forEach(slab=>{
+    slabs.forEach(slab => {
         let posDown = slab.position.y - tileSize;
         let posUp = slab.position.y + tileSize;
         let posRight = slab.position.x + tileSize;
         let posLeft = slab.position.x - tileSize;
 
-        euclidean_distance_portal=Math.sqrt(Math.pow((slab.position.x-doorPosition[0]),2)+Math.pow((slab.position.y-doorPosition[1]),2))
-        euclidean_distance_player=(Math.sqrt(slab.position.x*slab.position.x+slab.position.y*slab.position.y))
-        
-        average_euclidean_distance=(euclidean_distance_player+euclidean_distance_portal)/2
+        euclidean_distance_portal = Math.sqrt(Math.pow((slab.position.x - doorPosition[0]), 2) + Math.pow((slab.position.y - doorPosition[1]), 2))
+        euclidean_distance_player = (Math.sqrt(slab.position.x * slab.position.x + slab.position.y * slab.position.y))
+
+        average_euclidean_distance = (euclidean_distance_player + euclidean_distance_portal) / 2
 
         //-------Colocaión de la llave en una distancia media entre la puerta y en jugador-----
-        if(average_euclidean_distance>mejor_euclidean_distance)
-        {
-            mejor_euclidean_distance=euclidean_distance
-            keyPosition=[slab.position.x,slab.position.y]
-            console.log("KeyPosition",keyPosition)
+        if (average_euclidean_distance > mejor_euclidean_distance) {
+            mejor_euclidean_distance = euclidean_distance
+            keyPosition = [slab.position.x, slab.position.y]
+            console.log("KeyPosition", keyPosition)
         }
 
-        if(isPositionOccupied(posRight,posUp) && !isPositionOccupied(slab.position.x,posUp) && !isPositionOccupied(posRight,slab.position.y))
-        {
+        if (isPositionOccupied(posRight, posUp) && !isPositionOccupied(slab.position.x, posUp) && !isPositionOccupied(posRight, slab.position.y)) {
             const posKey = `${posRight},${slab.position.y}`;
             const newslab = ubik.createObject();
-            newslab.position.set(posRight, slab.position.y, 0); 
+            newslab.position.set(posRight, slab.position.y, 0);
             slabs.push(newslab);
             occupiedPositions.add(posKey);
-            
+
 
             const posKey2 = `${slab.position.x},${posUp}`;
             const newslab2 = ubik.createObject();
@@ -109,11 +86,10 @@ export function inicializar_mapa(dungeon,tileSize,ubik,sources,character,enemies
             slabs.push(newslab2);
             occupiedPositions.add(posKey2);
         }
-        if(isPositionOccupied(posRight,posDown) && !isPositionOccupied(slab.position.x,posDown) && !isPositionOccupied(posRight,slab.position.y))
-        {
+        if (isPositionOccupied(posRight, posDown) && !isPositionOccupied(slab.position.x, posDown) && !isPositionOccupied(posRight, slab.position.y)) {
             const posKey = `${slab.position.x},${posDown}`;
             const newslab = ubik.createObject();
-            newslab.position.set(slab.position.x, posDown, 0); 
+            newslab.position.set(slab.position.x, posDown, 0);
             slabs.push(newslab);
             occupiedPositions.add(posKey);
 
@@ -123,11 +99,10 @@ export function inicializar_mapa(dungeon,tileSize,ubik,sources,character,enemies
             slabs.push(newslab2);
             occupiedPositions.add(posKey2);
         }
-        if(isPositionOccupied(posLeft,posUp) && !isPositionOccupied(slab.position.x,posUp) && !isPositionOccupied(posLeft,slab.position.y))
-        {
+        if (isPositionOccupied(posLeft, posUp) && !isPositionOccupied(slab.position.x, posUp) && !isPositionOccupied(posLeft, slab.position.y)) {
             const posKey = `${posLeft},${slab.position.y}`;
             const newslab = ubik.createObject();
-            newslab.position.set(posLeft, slab.position.y, 0); 
+            newslab.position.set(posLeft, slab.position.y, 0);
             slabs.push(newslab);
             occupiedPositions.add(posKey);
 
@@ -137,11 +112,10 @@ export function inicializar_mapa(dungeon,tileSize,ubik,sources,character,enemies
             slabs.push(newslab2);
             occupiedPositions.add(posKey2);
         }
-        if(isPositionOccupied(posLeft,posDown) && !isPositionOccupied(slab.position.x,posDown) && !isPositionOccupied(posLeft,slab.position.y))
-        {
+        if (isPositionOccupied(posLeft, posDown) && !isPositionOccupied(slab.position.x, posDown) && !isPositionOccupied(posLeft, slab.position.y)) {
             const posKey = `${slab.position.x},${posDown}`;
             const newslab = ubik.createObject();
-            newslab.position.set(slab.position.x, posDown, 0); 
+            newslab.position.set(slab.position.x, posDown, 0);
             slabs.push(newslab);
             occupiedPositions.add(posKey);
 
@@ -149,132 +123,120 @@ export function inicializar_mapa(dungeon,tileSize,ubik,sources,character,enemies
             const newslab2 = ubik.createObject();
             newslab2.position.set(posLeft, slab.position.y, 0);
             slabs.push(newslab2);
-            occupiedPositions.add(posKey2);        
+            occupiedPositions.add(posKey2);
         }
 
     })
 
     //--------Inicialización del objeto llave--------
     // const key=ubik.createObject()
-    key.position.set(keyPosition[0],keyPosition[1],0)
+    key.position.set(keyPosition[0], keyPosition[1], 0)
 
-    var i=1
+    var i = 1
 
-    var exit=1
+    var exit = 1
 
     //==============Rellenar más huecos de la mazmorra==================
-    while(exit)
-    {
-        console.log("--i--:",i)
-        if(i==0)
-        {
-            exit=0
+    while (exit) {
+        console.log("--i--:", i)
+        if (i == 0) {
+            exit = 0
         }
 
-        i=0
+        i = 0
 
-        slabs.forEach(slab=>{
+        slabs.forEach(slab => {
             let posDown = slab.position.y - tileSize;
             let posUp = slab.position.y + tileSize;
             let posRight = slab.position.x + tileSize;
             let posLeft = slab.position.x - tileSize;
 
-            
 
-            if (!isPositionOccupied(posRight,posUp) && isPositionOccupied(posRight+tileSize,posUp+tileSize))
-                {             
-                    const posKey = `${posRight},${posUp}`;
-                    const newslab = ubik.createObject();
-                    newslab.position.set(posRight, posUp, 0); 
-                    slabs.push(newslab);
-                    occupiedPositions.add(posKey);
-                    i=i+1;
-                }
-            if (!isPositionOccupied(posRight,posDown) && isPositionOccupied(posRight+tileSize,posDown-tileSize))
-                {              
-                    const posKey = `${posRight},${posDown}`;
-                    const newslab = ubik.createObject();
-                    newslab.position.set(posRight, posDown, 0); 
-                    slabs.push(newslab);
-                    occupiedPositions.add(posKey);
-                    i=i+1;
-                }
-            if (!isPositionOccupied(posLeft,posUp) && isPositionOccupied(posLeft-tileSize,posUp+tileSize))
-                {               
-                    const posKey = `${posLeft},${posUp}`;
-                    const newslab = ubik.createObject();
-                    newslab.position.set(posLeft, posUp, 0); 
-                    slabs.push(newslab);
-                    occupiedPositions.add(posKey);
-                    i=i+1;
-                }
-            if (!isPositionOccupied(posLeft,posDown) && isPositionOccupied(posLeft-tileSize,posDown-tileSize))
-                {               
-                    const posKey = `${posLeft},${posDown}`;
-                    const newslab = ubik.createObject();
-                    newslab.position.set(posLeft, posDown, 0); 
-                    slabs.push(newslab);
-                    occupiedPositions.add(posKey);
-                    i=i+1;
-                }
-                if (!isPositionOccupied(posLeft,slab.position.y) && isPositionOccupied(posLeft-tileSize,slab.position.y))
-                {              
-                    const posKey = `${posLeft},${slab.position.y}`;
-                    const newslab = ubik.createObject();
-                    newslab.position.set(posLeft, slab.position.y, 0); 
-                    slabs.push(newslab);
-                    occupiedPositions.add(posKey);
-                    i=i+1;
-                }
-                if (!isPositionOccupied(posRight,slab.position.y) && isPositionOccupied(posRight+tileSize,slab.position.y))
-                {
-                    const posKey = `${posRight},${slab.position.y}`;
-                    const newslab = ubik.createObject();
-                    newslab.position.set(posRight, slab.position.y, 0); 
-                    slabs.push(newslab);
-                    occupiedPositions.add(posKey);
-                    i=i+1;
-                }
-                if (!isPositionOccupied(slab.position.x,posDown) && isPositionOccupied(slab.position.x,posDown-tileSize))
-                {
-                    const posKey = `${slab.position.x},${posDown}`;
-                    const newslab = ubik.createObject();
-                    newslab.position.set(slab.position.x, posDown, 0); 
-                    slabs.push(newslab);
-                    occupiedPositions.add(posKey);
-                    i=i+1;
-                }
-                if (!isPositionOccupied(slab.position.x,posUp) && isPositionOccupied(slab.position.x,posUp+tileSize))
-                {
-                    const posKey = `${slab.position.x},${posUp}`;
-                    const newslab = ubik.createObject();
-                    newslab.position.set(slab.position.x, posUp, 0); 
-                    slabs.push(newslab);
-                    occupiedPositions.add(posKey);
-                    i=i+1;
-                }
-            
+
+            if (!isPositionOccupied(posRight, posUp) && isPositionOccupied(posRight + tileSize, posUp + tileSize)) {
+                const posKey = `${posRight},${posUp}`;
+                const newslab = ubik.createObject();
+                newslab.position.set(posRight, posUp, 0);
+                slabs.push(newslab);
+                occupiedPositions.add(posKey);
+                i = i + 1;
+            }
+            if (!isPositionOccupied(posRight, posDown) && isPositionOccupied(posRight + tileSize, posDown - tileSize)) {
+                const posKey = `${posRight},${posDown}`;
+                const newslab = ubik.createObject();
+                newslab.position.set(posRight, posDown, 0);
+                slabs.push(newslab);
+                occupiedPositions.add(posKey);
+                i = i + 1;
+            }
+            if (!isPositionOccupied(posLeft, posUp) && isPositionOccupied(posLeft - tileSize, posUp + tileSize)) {
+                const posKey = `${posLeft},${posUp}`;
+                const newslab = ubik.createObject();
+                newslab.position.set(posLeft, posUp, 0);
+                slabs.push(newslab);
+                occupiedPositions.add(posKey);
+                i = i + 1;
+            }
+            if (!isPositionOccupied(posLeft, posDown) && isPositionOccupied(posLeft - tileSize, posDown - tileSize)) {
+                const posKey = `${posLeft},${posDown}`;
+                const newslab = ubik.createObject();
+                newslab.position.set(posLeft, posDown, 0);
+                slabs.push(newslab);
+                occupiedPositions.add(posKey);
+                i = i + 1;
+            }
+            if (!isPositionOccupied(posLeft, slab.position.y) && isPositionOccupied(posLeft - tileSize, slab.position.y)) {
+                const posKey = `${posLeft},${slab.position.y}`;
+                const newslab = ubik.createObject();
+                newslab.position.set(posLeft, slab.position.y, 0);
+                slabs.push(newslab);
+                occupiedPositions.add(posKey);
+                i = i + 1;
+            }
+            if (!isPositionOccupied(posRight, slab.position.y) && isPositionOccupied(posRight + tileSize, slab.position.y)) {
+                const posKey = `${posRight},${slab.position.y}`;
+                const newslab = ubik.createObject();
+                newslab.position.set(posRight, slab.position.y, 0);
+                slabs.push(newslab);
+                occupiedPositions.add(posKey);
+                i = i + 1;
+            }
+            if (!isPositionOccupied(slab.position.x, posDown) && isPositionOccupied(slab.position.x, posDown - tileSize)) {
+                const posKey = `${slab.position.x},${posDown}`;
+                const newslab = ubik.createObject();
+                newslab.position.set(slab.position.x, posDown, 0);
+                slabs.push(newslab);
+                occupiedPositions.add(posKey);
+                i = i + 1;
+            }
+            if (!isPositionOccupied(slab.position.x, posUp) && isPositionOccupied(slab.position.x, posUp + tileSize)) {
+                const posKey = `${slab.position.x},${posUp}`;
+                const newslab = ubik.createObject();
+                newslab.position.set(slab.position.x, posUp, 0);
+                slabs.push(newslab);
+                occupiedPositions.add(posKey);
+                i = i + 1;
+            }
+
         })
     }
 
-    const tam= new CANNON.Vec3(tileSize/2,tileSize/2,tileSize/2)
+    const tam = new CANNON.Vec3(tileSize / 2, tileSize / 2, tileSize / 2)
 
     //=================Colocación paredes laterales===============
-    const LeftSideWalls=[];
-    const RightSideWalls=[]
-    slabs.forEach(slab=>{
-        
+    const LeftSideWalls = [];
+    const RightSideWalls = []
+    slabs.forEach(slab => {
+
         let posDown = slab.position.y - tileSize;
         let posUp = slab.position.y + tileSize;
         let posRight = slab.position.x + tileSize;
         let posLeft = slab.position.x - tileSize;
 
-        if(!isPositionOccupied(posLeft,posDown) && !isPositionOccupied(posLeft,posUp) && !isPositionOccupied(posLeft,slab.position.y))
-        {
-            if(isPositionOccupied(slab.position.x,posDown) && isPositionOccupied(slab.position.x, posUp) && !isPositionOccupied(posRight,slab.position.y) && !isPositionOccupied(posLeft,slab.position.y)
-                && !isPositionOccupied(posRight,posUp) && !isPositionOccupied(posRight,posDown) && !isPositionOccupied(posLeft,posDown) && !isPositionOccupied(posLeft,posUp))
-            {
-                
+        if (!isPositionOccupied(posLeft, posDown) && !isPositionOccupied(posLeft, posUp) && !isPositionOccupied(posLeft, slab.position.y)) {
+            if (isPositionOccupied(slab.position.x, posDown) && isPositionOccupied(slab.position.x, posUp) && !isPositionOccupied(posRight, slab.position.y) && !isPositionOccupied(posLeft, slab.position.y)
+                && !isPositionOccupied(posRight, posUp) && !isPositionOccupied(posRight, posDown) && !isPositionOccupied(posLeft, posDown) && !isPositionOccupied(posLeft, posUp)) {
+
                 const newslab = ubik.createObject();
                 ubik.addComponent(
                     newslab,
@@ -282,10 +244,10 @@ export function inicializar_mapa(dungeon,tileSize,ubik,sources,character,enemies
                     ubik.physics.createBody({
                         mass: 1,
                         shape: new CANNON.Box(tam)
-                }))
-                newslab.position.set(posRight, slab.position.y, 0); 
+                    }))
+                newslab.position.set(posRight, slab.position.y, 0);
                 RightSideWalls.push(newslab);
-                
+
                 const newslab2 = ubik.createObject();
                 ubik.addComponent(
                     newslab2,
@@ -293,13 +255,12 @@ export function inicializar_mapa(dungeon,tileSize,ubik,sources,character,enemies
                     ubik.physics.createBody({
                         mass: 1,
                         shape: new CANNON.Box(tam)
-                }))
+                    }))
                 newslab2.position.set(posLeft, slab.position.y, 0);
                 LeftSideWalls.push(newslab2);
 
             }
-            else
-            {
+            else {
                 const newslab2 = ubik.createObject();
                 ubik.addComponent(
                     newslab2,
@@ -307,75 +268,70 @@ export function inicializar_mapa(dungeon,tileSize,ubik,sources,character,enemies
                     ubik.physics.createBody({
                         mass: 0,
                         shape: new CANNON.Box(tam)
-                }))
+                    }))
                 newslab2.position.set(posLeft, slab.position.y, 0);
                 LeftSideWalls.push(newslab2);
             }
         }
 
-        if(!isPositionOccupied(posRight,posDown) && !isPositionOccupied(posRight,posUp) && !isPositionOccupied(posRight,slab.position.y))
-            {
-                if(isPositionOccupied(slab.position.x,posDown) && isPositionOccupied(slab.position.x, posUp) && !isPositionOccupied(posRight,slab.position.y) && !isPositionOccupied(posLeft,slab.position.y)
-                    && !isPositionOccupied(posRight,posUp) && !isPositionOccupied(posRight,posDown) && !isPositionOccupied(posLeft,posDown) && !isPositionOccupied(posLeft,posUp))
-                {
-                
-                    const newslab = ubik.createObject();
-                    ubik.addComponent(
-                        newslab,
-                        'rigidbody',
-                        ubik.physics.createBody({
-                            mass: 0,
-                            shape: new CANNON.Box(tam)
-                    }))
-                    newslab.position.set(posRight, slab.position.y, 0); 
-                    RightSideWalls.push(newslab);
-                
-                    const newslab2 = ubik.createObject();
-                    ubik.addComponent(
-                        newslab2,
-                        'rigidbody',
-                        ubik.physics.createBody({
-                            mass: 0,
-                            shape: new CANNON.Box(tam)
-                    }))
-                    newslab2.position.set(posLeft, slab.position.y, 0);
-                    LeftSideWalls.push(newslab2);
+        if (!isPositionOccupied(posRight, posDown) && !isPositionOccupied(posRight, posUp) && !isPositionOccupied(posRight, slab.position.y)) {
+            if (isPositionOccupied(slab.position.x, posDown) && isPositionOccupied(slab.position.x, posUp) && !isPositionOccupied(posRight, slab.position.y) && !isPositionOccupied(posLeft, slab.position.y)
+                && !isPositionOccupied(posRight, posUp) && !isPositionOccupied(posRight, posDown) && !isPositionOccupied(posLeft, posDown) && !isPositionOccupied(posLeft, posUp)) {
 
-                }
-                else
-                {
-                    const newslab2 = ubik.createObject();
-                    ubik.addComponent(
-                        newslab2,
-                        'rigidbody',
-                        ubik.physics.createBody({
-                            mass: 0,
-                            shape: new CANNON.Box(tam)
+                const newslab = ubik.createObject();
+                ubik.addComponent(
+                    newslab,
+                    'rigidbody',
+                    ubik.physics.createBody({
+                        mass: 0,
+                        shape: new CANNON.Box(tam)
                     }))
-                    newslab2.position.set(posRight, slab.position.y, 0);
-                    RightSideWalls.push(newslab2);
-                }
+                newslab.position.set(posRight, slab.position.y, 0);
+                RightSideWalls.push(newslab);
+
+                const newslab2 = ubik.createObject();
+                ubik.addComponent(
+                    newslab2,
+                    'rigidbody',
+                    ubik.physics.createBody({
+                        mass: 0,
+                        shape: new CANNON.Box(tam)
+                    }))
+                newslab2.position.set(posLeft, slab.position.y, 0);
+                LeftSideWalls.push(newslab2);
+
             }
+            else {
+                const newslab2 = ubik.createObject();
+                ubik.addComponent(
+                    newslab2,
+                    'rigidbody',
+                    ubik.physics.createBody({
+                        mass: 0,
+                        shape: new CANNON.Box(tam)
+                    }))
+                newslab2.position.set(posRight, slab.position.y, 0);
+                RightSideWalls.push(newslab2);
+            }
+        }
 
     });
 
     //=================Colocación paredes de arriba y abajo===============
-    const UpWalls=[];
-    const DownWalls=[];
+    const UpWalls = [];
+    const DownWalls = [];
 
-    slabs.forEach(slab=>{
-        
+    slabs.forEach(slab => {
+
         let posDown = slab.position.y - tileSize;
         let posUp = slab.position.y + tileSize;
         let posRight = slab.position.x + tileSize;
         let posLeft = slab.position.x - tileSize;
 
-        if(!isPositionOccupied(posRight,posUp) && !isPositionOccupied(posLeft,posUp) && !isPositionOccupied(slab.position.x, posUp))
-        {
-            if(!isPositionOccupied(slab.position.x,posDown) && !isPositionOccupied(slab.position.x, posUp) && isPositionOccupied(posRight,slab.position.y) && isPositionOccupied(posLeft,slab.position.y)
-                && !isPositionOccupied(posRight,posUp) && !isPositionOccupied(posRight,posDown) && !isPositionOccupied(posLeft,posDown) && !isPositionOccupied(posLeft,posUp))
-            {
-            
+        if (!isPositionOccupied(posRight, posUp) && !isPositionOccupied(posLeft, posUp) && !isPositionOccupied(slab.position.x, posUp)) {
+            if (!isPositionOccupied(slab.position.x, posDown) && !isPositionOccupied(slab.position.x, posUp) && isPositionOccupied(posRight, slab.position.y) && isPositionOccupied(posLeft, slab.position.y)
+                && !isPositionOccupied(posRight, posUp) && !isPositionOccupied(posRight, posDown) && !isPositionOccupied(posLeft, posDown) && !isPositionOccupied(posLeft, posUp)) {
+
                 const newslab = ubik.createObject();
                 ubik.addComponent(
                     newslab,
@@ -383,10 +339,10 @@ export function inicializar_mapa(dungeon,tileSize,ubik,sources,character,enemies
                     ubik.physics.createBody({
                         mass: 0,
                         shape: new CANNON.Box(tam)
-                }))
-                newslab.position.set(slab.position.x, posUp, 0); 
+                    }))
+                newslab.position.set(slab.position.x, posUp, 0);
                 UpWalls.push(newslab);
-            
+
                 const newslab2 = ubik.createObject();
                 ubik.addComponent(
                     newslab2,
@@ -394,13 +350,12 @@ export function inicializar_mapa(dungeon,tileSize,ubik,sources,character,enemies
                     ubik.physics.createBody({
                         mass: 0,
                         shape: new CANNON.Box(tam)
-                }))
+                    }))
                 newslab2.position.set(slab.position.x, posDown, 0);
                 DownWalls.push(newslab2);
-                
+
             }
-            else
-            {
+            else {
                 const newslab = ubik.createObject();
                 ubik.addComponent(
                     newslab,
@@ -408,72 +363,68 @@ export function inicializar_mapa(dungeon,tileSize,ubik,sources,character,enemies
                     ubik.physics.createBody({
                         mass: 0,
                         shape: new CANNON.Box(tam)
-                }))
-                newslab.position.set(slab.position.x, posUp, 0); 
+                    }))
+                newslab.position.set(slab.position.x, posUp, 0);
                 UpWalls.push(newslab);
             }
         }
 
-        if(!isPositionOccupied(posRight,posDown) && !isPositionOccupied(posLeft,posDown) && !isPositionOccupied(slab.position.x, posDown))
-            {
-                if(!isPositionOccupied(slab.position.x,posDown) && !isPositionOccupied(slab.position.x, posUp) && isPositionOccupied(posRight,slab.position.y) && isPositionOccupied(posLeft,slab.position.y)
-                    && !isPositionOccupied(posRight,posUp) && !isPositionOccupied(posRight,posDown) && !isPositionOccupied(posLeft,posDown) && !isPositionOccupied(posLeft,posUp))
-                {
-                    
-                    const newslab = ubik.createObject();
-                    ubik.addComponent(
-                        newslab,
-                        'rigidbody',
-                        ubik.physics.createBody({
-                            mass: 0,
-                            shape: new CANNON.Box(tam)
-                    }))
-                    newslab.position.set(slab.position.x, posUp, 0); 
-                    UpWalls.push(newslab);
+        if (!isPositionOccupied(posRight, posDown) && !isPositionOccupied(posLeft, posDown) && !isPositionOccupied(slab.position.x, posDown)) {
+            if (!isPositionOccupied(slab.position.x, posDown) && !isPositionOccupied(slab.position.x, posUp) && isPositionOccupied(posRight, slab.position.y) && isPositionOccupied(posLeft, slab.position.y)
+                && !isPositionOccupied(posRight, posUp) && !isPositionOccupied(posRight, posDown) && !isPositionOccupied(posLeft, posDown) && !isPositionOccupied(posLeft, posUp)) {
 
-                    const newslab2 = ubik.createObject();
-                    ubik.addComponent(
-                        newslab2,
-                        'rigidbody',
-                        ubik.physics.createBody({
-                            mass: 0,
-                            shape: new CANNON.Box(tam)
+                const newslab = ubik.createObject();
+                ubik.addComponent(
+                    newslab,
+                    'rigidbody',
+                    ubik.physics.createBody({
+                        mass: 0,
+                        shape: new CANNON.Box(tam)
                     }))
-                    newslab2.position.set(slab.position.x, posDown, 0);
-                    DownWalls.push(newslab2);
+                newslab.position.set(slab.position.x, posUp, 0);
+                UpWalls.push(newslab);
 
-                }
-                else
-                {
-                    const newslab = ubik.createObject();
-                    ubik.addComponent(
-                        newslab,
-                        'rigidbody',
-                        ubik.physics.createBody({
-                            mass: 0,
-                            shape: new CANNON.Box(tam)
+                const newslab2 = ubik.createObject();
+                ubik.addComponent(
+                    newslab2,
+                    'rigidbody',
+                    ubik.physics.createBody({
+                        mass: 0,
+                        shape: new CANNON.Box(tam)
                     }))
-                    newslab.position.set(slab.position.x, posDown, 0); 
-                    DownWalls.push(newslab);
-                }
+                newslab2.position.set(slab.position.x, posDown, 0);
+                DownWalls.push(newslab2);
+
             }
-            
+            else {
+                const newslab = ubik.createObject();
+                ubik.addComponent(
+                    newslab,
+                    'rigidbody',
+                    ubik.physics.createBody({
+                        mass: 0,
+                        shape: new CANNON.Box(tam)
+                    }))
+                newslab.position.set(slab.position.x, posDown, 0);
+                DownWalls.push(newslab);
+            }
+        }
+
 
     });
 
     //=================Colocación paredes de las esquinas===============
 
-    const LeftDownCornerWalls=[];
+    const LeftDownCornerWalls = [];
 
-    slabs.forEach(slab=>{
-        
+    slabs.forEach(slab => {
+
         let posDown = slab.position.y - tileSize;
         let posUp = slab.position.y + tileSize;
         let posRight = slab.position.x + tileSize;
         let posLeft = slab.position.x - tileSize;
 
-        if(!isPositionOccupied(posLeft,slab.position.y) && !isPositionOccupied(slab.position.x,posDown) && !isPositionOccupied(posLeft,posDown))
-        {
+        if (!isPositionOccupied(posLeft, slab.position.y) && !isPositionOccupied(slab.position.x, posDown) && !isPositionOccupied(posLeft, posDown)) {
             const newslab = ubik.createObject();
             ubik.addComponent(
                 newslab,
@@ -481,12 +432,11 @@ export function inicializar_mapa(dungeon,tileSize,ubik,sources,character,enemies
                 ubik.physics.createBody({
                     mass: 0,
                     shape: new CANNON.Box(tam)
-            }))
-            newslab.position.set(posLeft,posDown, 0); 
+                }))
+            newslab.position.set(posLeft, posDown, 0);
             LeftDownCornerWalls.push(newslab);
         }
-        if(isPositionOccupied(slab.position.x,posUp) && isPositionOccupied(posRight,slab.position.y) && !isPositionOccupied(posRight,posUp))
-        {
+        if (isPositionOccupied(slab.position.x, posUp) && isPositionOccupied(posRight, slab.position.y) && !isPositionOccupied(posRight, posUp)) {
             const newslab = ubik.createObject();
             ubik.addComponent(
                 newslab,
@@ -494,23 +444,22 @@ export function inicializar_mapa(dungeon,tileSize,ubik,sources,character,enemies
                 ubik.physics.createBody({
                     mass: 0,
                     shape: new CANNON.Box(tam)
-            }))
-            newslab.position.set(posRight,posUp, 0); 
+                }))
+            newslab.position.set(posRight, posUp, 0);
             UpWalls.push(newslab);
         }
     });
 
-    const RightDownCornerWalls=[];
+    const RightDownCornerWalls = [];
 
-    slabs.forEach(slab=>{
-        
+    slabs.forEach(slab => {
+
         let posDown = slab.position.y - tileSize;
         let posUp = slab.position.y + tileSize;
         let posRight = slab.position.x + tileSize;
         let posLeft = slab.position.x - tileSize;
 
-        if(!isPositionOccupied(posRight,slab.position.y) && !isPositionOccupied(slab.position.x,posDown) && !isPositionOccupied(posRight,posDown))
-        {
+        if (!isPositionOccupied(posRight, slab.position.y) && !isPositionOccupied(slab.position.x, posDown) && !isPositionOccupied(posRight, posDown)) {
             const newslab = ubik.createObject();
             ubik.addComponent(
                 newslab,
@@ -518,13 +467,12 @@ export function inicializar_mapa(dungeon,tileSize,ubik,sources,character,enemies
                 ubik.physics.createBody({
                     mass: 0,
                     shape: new CANNON.Box(tam)
-            }))
-            newslab.position.set(posRight,posDown, 0);
+                }))
+            newslab.position.set(posRight, posDown, 0);
             RightDownCornerWalls.push(newslab);
         }
 
-        if(isPositionOccupied(slab.position.x,posUp) && isPositionOccupied(posLeft,slab.position.y) && !isPositionOccupied(posLeft,posUp))
-        {
+        if (isPositionOccupied(slab.position.x, posUp) && isPositionOccupied(posLeft, slab.position.y) && !isPositionOccupied(posLeft, posUp)) {
             const newslab = ubik.createObject();
             ubik.addComponent(
                 newslab,
@@ -532,37 +480,35 @@ export function inicializar_mapa(dungeon,tileSize,ubik,sources,character,enemies
                 ubik.physics.createBody({
                     mass: 0,
                     shape: new CANNON.Box(tam)
-            }))
-            newslab.position.set(posLeft,posUp, 0); 
+                }))
+            newslab.position.set(posLeft, posUp, 0);
             UpWalls.push(newslab);
         }
     });
 
-    const RightUpCornerWalls=[];
-    const RightUpCornerWallsFillUp=[];
-    slabs.forEach(slab=>{
-        
+    const RightUpCornerWalls = [];
+    const RightUpCornerWallsFillUp = [];
+    slabs.forEach(slab => {
+
         let posDown = slab.position.y - tileSize;
         let posUp = slab.position.y + tileSize;
         let posRight = slab.position.x + tileSize;
         let posLeft = slab.position.x - tileSize;
 
-        if(!isPositionOccupied(posRight,slab.position.y) && !isPositionOccupied(slab.position.x,posUp) && !isPositionOccupied(posRight,posUp))
-        {
+        if (!isPositionOccupied(posRight, slab.position.y) && !isPositionOccupied(slab.position.x, posUp) && !isPositionOccupied(posRight, posUp)) {
             const newslab = ubik.createObject();
             ubik.addComponent(
                 newslab,
                 'rigidbody',
                 ubik.physics.createBody({
-                    mass:1,
+                    mass: 1,
                     shape: new CANNON.Box(tam)
-            }))
-            newslab.position.set(posRight,posUp, 0); 
+                }))
+            newslab.position.set(posRight, posUp, 0);
             RightUpCornerWalls.push(newslab);
         }
 
-        if(isPositionOccupied(posLeft,slab.position.y) && isPositionOccupied(slab.position.x,posDown) && !isPositionOccupied(posLeft,posDown))
-        {
+        if (isPositionOccupied(posLeft, slab.position.y) && isPositionOccupied(slab.position.x, posDown) && !isPositionOccupied(posLeft, posDown)) {
             const newslab = ubik.createObject();
             ubik.addComponent(
                 newslab,
@@ -570,23 +516,22 @@ export function inicializar_mapa(dungeon,tileSize,ubik,sources,character,enemies
                 ubik.physics.createBody({
                     mass: 0,
                     shape: new CANNON.Box(tam)
-            }))
-            newslab.position.set(posLeft,posDown, 0); 
+                }))
+            newslab.position.set(posLeft, posDown, 0);
             RightUpCornerWallsFillUp.push(newslab);
         }
     });
 
-    const LeftUpCornerWalls=[];
-    const LeftUpCornerWallsFillUp=[];
-    slabs.forEach(slab=>{
-        
+    const LeftUpCornerWalls = [];
+    const LeftUpCornerWallsFillUp = [];
+    slabs.forEach(slab => {
+
         let posDown = slab.position.y - tileSize;
         let posUp = slab.position.y + tileSize;
         let posRight = slab.position.x + tileSize;
         let posLeft = slab.position.x - tileSize;
 
-        if(!isPositionOccupied(posLeft,slab.position.y) && !isPositionOccupied(slab.position.x,posUp) && !isPositionOccupied(posLeft,posUp))
-        {
+        if (!isPositionOccupied(posLeft, slab.position.y) && !isPositionOccupied(slab.position.x, posUp) && !isPositionOccupied(posLeft, posUp)) {
             const newslab = ubik.createObject();
             ubik.addComponent(
                 newslab,
@@ -594,13 +539,12 @@ export function inicializar_mapa(dungeon,tileSize,ubik,sources,character,enemies
                 ubik.physics.createBody({
                     mass: 0,
                     shape: new CANNON.Box(tam)
-            }))
-            newslab.position.set(posLeft,posUp, 0); 
+                }))
+            newslab.position.set(posLeft, posUp, 0);
             LeftUpCornerWalls.push(newslab);
         }
 
-        if(isPositionOccupied(posRight,slab.position.y) && isPositionOccupied(slab.position.x,posDown) && !isPositionOccupied(posRight,posDown))
-        {
+        if (isPositionOccupied(posRight, slab.position.y) && isPositionOccupied(slab.position.x, posDown) && !isPositionOccupied(posRight, posDown)) {
             const newslab = ubik.createObject();
             ubik.addComponent(
                 newslab,
@@ -608,8 +552,8 @@ export function inicializar_mapa(dungeon,tileSize,ubik,sources,character,enemies
                 ubik.physics.createBody({
                     mass: 0,
                     shape: new CANNON.Box(tam)
-            }))
-            newslab.position.set(posRight,posDown, 0); 
+                }))
+            newslab.position.set(posRight, posDown, 0);
             LeftUpCornerWallsFillUp.push(newslab);
         }
     });
@@ -674,7 +618,7 @@ export function inicializar_mapa(dungeon,tileSize,ubik,sources,character,enemies
         RightUpCornerWalls.forEach((wall) => {
             ubik.addComponent(wall, 'mesh', ubik.mesh.createFromGeometry(walls4Geometry, walls4Material));
         });
-        
+
         const walls5Geometry = new THREE.PlaneGeometry(tileSize, tileSize);
         const walls5Material = new THREE.MeshStandardMaterial({ map: ubik.assets.get('Left_side_wall'/*'left-up-corner'*/), transparent: false, alphaTest: 0.5 });
         LeftUpCornerWalls.forEach((wall) => {
@@ -692,21 +636,18 @@ export function inicializar_mapa(dungeon,tileSize,ubik,sources,character,enemies
         const playerMaterial = new THREE.MeshStandardMaterial({ map: ubik.assets.get('player'), transparent: false, alphaTest: 0.5 });
         ubik.addComponent(character, 'mesh', ubik.mesh.createFromGeometry(playerGeometry, playerMaterial));
 
-        //----------Assets enemigo---------
-        const enemyGeometry = new THREE.PlaneGeometry(tileSize,tileSize);
-        const enemyMaterial = new THREE.MeshStandardMaterial({ map: ubik.assets.get('enemigo'), transparent: true, alphaTest: 0.5 });
-        enemies.forEach((enemy) => {
-            ubik.addComponent(enemy, 'mesh', ubik.mesh.createFromGeometry(enemyGeometry, enemyMaterial));
-        });
         //----------Assets portal---------
-        const portalGeometry = new THREE.PlaneGeometry(tileSize,tileSize);
+        const portalGeometry = new THREE.PlaneGeometry(tileSize, tileSize);
         const portalMaterial = new THREE.MeshStandardMaterial({ map: ubik.assets.get('portal_closed'), transparent: true, alphaTest: 0.5 });
         ubik.addComponent(portal, 'mesh', ubik.mesh.createFromGeometry(portalGeometry, portalMaterial));
-    
+
         //----------Assets llave---------
-        const keyGeometry = new THREE.PlaneGeometry(tileSize,tileSize);
+        const keyGeometry = new THREE.PlaneGeometry(tileSize, tileSize);
         const keyMaterial = new THREE.MeshStandardMaterial({ map: ubik.assets.get('llave'), transparent: true, alphaTest: 0.5 });
         ubik.addComponent(key, 'mesh', ubik.mesh.createFromGeometry(keyGeometry, keyMaterial));
 
     });
+
+    return position_enemies;
+
 }
