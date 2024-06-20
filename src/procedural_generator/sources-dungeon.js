@@ -21,6 +21,11 @@ export default [
         path: '../assets/dungeon/explosion.png'
     },
     {
+        name: 'proyectil',
+        type: 'texture',
+        path: '../assets/dungeon/proyectil.png'
+    },
+    {
         name:'Down_Wall',
         type: 'texture',
         path: '../assets/dungeon/Down_Wall2.png'

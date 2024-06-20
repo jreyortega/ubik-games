@@ -16,7 +16,7 @@ export default class Bullet {
 
         this.bullet = this.ubik.createObject();
         const bulletGeometry = new THREE.PlaneGeometry(this.tileSize / 3, this.tileSize / 3);
-        const bulletMaterial = new THREE.MeshStandardMaterial({ map: this.ubik.assets.get('portal_closed'), transparent: true, alphaTest: 0.5 });
+        const bulletMaterial = new THREE.MeshBasicMaterial({ map: this.ubik.assets.get('proyectil'), transparent: true, alphaTest: 0.5 });
         this.ubik.addComponent(this.bullet, 'mesh', this.ubik.mesh.createFromGeometry(bulletGeometry, bulletMaterial));
         const tam = new CANNON.Vec3(this.tileSize / 4, this.tileSize / 4, this.tileSize / 4);
 
@@ -101,7 +101,7 @@ export default class Bullet {
             }
         });
 
-        this.bullet.mesh.map = this.ubik.assets.get('explosion');
+        this.bullet.mesh.material.map = this.ubik.assets.get('explosion');
 
         // Remove the bullet from the scene and physics world
         setTimeout(() => {
