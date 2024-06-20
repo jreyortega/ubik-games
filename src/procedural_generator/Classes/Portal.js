@@ -7,6 +7,7 @@ export default class Portal {
         this.player = player;
         this.tileSize = 2; // Assuming the tile size is 2 units
         this.animationRunning = false;
+        this.nextLevel = false;
     }
 
     initAnimation() {
@@ -54,7 +55,20 @@ export default class Portal {
                 console.log("Portal animation started!");
                 this.animationRunning = true;
                 this.initAnimation();
+                setTimeout(() => {
+                    this.nextLevel = true;
+                }, 1000);
             }
         }
+    }
+
+    // Getter for nextLevel
+    getNextLevel() {
+        return this.nextLevel;
+    }
+
+    // Setter for nextLevel
+    setNextLevel(value) {
+        this.nextLevel = value;
     }
 }

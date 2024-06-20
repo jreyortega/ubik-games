@@ -15,20 +15,25 @@ canvas {
     outline: none;
 }
 
-#hud {
+#hud-container {
     position: absolute;
     top: 10px;
     left: 10px;
+    display: flex;
+    gap: 10px;
+    z-index: 1000;
+}
+
+#hud, #level-hud {
     background-color: black;
     color: rgb(255, 255, 255);
     font-family: 'Press Start 2P', cursive;
     font-size: 20px;
     padding: 10px;
     border: 2px solid rgb(255, 255, 255);
-    z-index: 1000;
 }
 
-#life {
+#life, #level {
     margin: 0;
 }
 
