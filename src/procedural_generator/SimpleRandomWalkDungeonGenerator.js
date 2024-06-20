@@ -11,9 +11,6 @@ class SimpleRandomWalkDungeonGenerator {
 
     runProceduralGeneration() {
         const floorPositions = this.runRandomWalk(this.startPosition);
-        floorPositions.forEach(position => {
-            console.log(`Floor position: x: ${position.x}, y: ${position.y}`);
-        });
         return floorPositions;
     }
 

@@ -126,7 +126,9 @@ export default class Player {
         }
 
         this.character.position.set(this.x, this.y, 1);
-        this.character.mesh.position.copy(this.character.position);
+        if (this.character.mesh) {
+            this.character.mesh.position.copy(this.character.position);
+        }
 
         if (isMoving) {
             this.isWalking = true;
@@ -213,7 +215,7 @@ export default class Player {
                 const textureName = this.isAttacking ? 'player_attacking_right' : `player_walk_right${this.animationTimeline.time() % 0.25 < 0.125 ? 1 : 2}`;
                 const texture = this.ubik.assets.get(textureName);
 
-                if (texture) {
+                if (texture && this.character.mesh) {
                     this.character.mesh.material.map = texture;
                     this.character.mesh.material.needsUpdate = true;
                 }

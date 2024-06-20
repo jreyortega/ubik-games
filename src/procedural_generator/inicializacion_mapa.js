@@ -150,7 +150,6 @@ export function inicializar_mapa(dungeon, tileSize, ubik, sources, character, pl
 
     //==============Rellenar más huecos de la mazmorra==================
     while (exit) {
-        console.log("--i--:", i)
         if (i == 0) {
             exit = 0
         }
