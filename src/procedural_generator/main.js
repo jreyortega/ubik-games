@@ -8,6 +8,30 @@ import Player from './Classes/Player.js';
 import Enemy from './Classes/Enemy.js';
 import Portal from './Classes/Portal.js';
 
+// Function to get the current level from the URL parameters
+function getLevelFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    return parseInt(params.get('level')) || 1;
+}
+
+// Function to reload the page with the next level
+function loadNextLevel() {
+    const currentLevel = getLevelFromURL();
+    const nextLevel = currentLevel + 1;
+    window.location.search = `?level=${nextLevel}`;
+}
+
+// Get the current level
+const currentLevel = getLevelFromURL();
+
+// Update the level display
+function updateLevelDisplay(level) {
+    const levelElement = document.getElementById('level');
+    if (levelElement) {
+        levelElement.textContent = `Level: ${level}`;
+    }
+}
+
 // Play background music
 window.addEventListener('DOMContentLoaded', (event) => {
     const backgroundMusic = document.getElementById('background-music');
@@ -28,21 +52,10 @@ window.addEventListener('DOMContentLoaded', (event) => {
 
     // Listen for the button click to toggle audio
     audioButton.addEventListener('click', toggleAudio);
+
+    // Update the level display on page load
+    updateLevelDisplay(currentLevel);
 });
-
-// Function to get URL parameters
-function getUrlParameter(name) {
-    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-    const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-    const results = regex.exec(location.search);
-    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
-}
-
-// Get the level from the URL
-let level = parseInt(getUrlParameter('level')) || 1;
-
-// Update the level in the HUD
-document.getElementById('level').innerText = `Level: ${level}`;
 
 const ubik = new Ubik({ cameraType: 'orthographic' });
 
@@ -58,8 +71,7 @@ const tileSize = 2;
 const dungeonGenerator = new CorridorFirstDungeonGenerator({ x: 0, y: 0 }, 100, 3, true);
 const dungeon = dungeonGenerator.runProceduralGeneration();
 
-// INICIALIZACION DE OBJETOS
-// Inicializacion del objeto character
+// Initialization of objects
 const tam = new CANNON.Vec3(tileSize / 2, tileSize / 2, tileSize / 2);
 const character = ubik.createObject();
 character.position.set(0, 0, 0);
@@ -72,10 +84,7 @@ ubik.addComponent(
     })
 );
 
-// Inicializción del objeto portal
 const portal = ubik.createObject();
-
-// Inicialización del objeto llave
 const key = ubik.createObject();
 const WallsList = [];
 const player = new Player(0, 0, character, ubik, WallsList, key);
@@ -114,11 +123,18 @@ ubik.update = (dt) => {
     });
     collisionAvoidance(enemies);
 
-    // Check if the next level should be loaded
+    // Check if the player has entered the portal and move to the next level
     if (Portal_1.getNextLevel()) {
-        const nextLevel = level + 1;
-        window.location.href = `${window.location.pathname}?level=${nextLevel}`;
+        console.log("Moving to the next level!");
+        loadNextLevel(); // Load the next level
     }
 };
 
 ubik.start();
+
+window.addEventListener('load', () => {
+    const loadingMessage = document.getElementById('loading-message');
+    if (loadingMessage) {
+        loadingMessage.style.display = 'none';
+    }
+});
