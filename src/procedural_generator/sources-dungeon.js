@@ -171,6 +171,10 @@ export default [
         type: 'texture',
         path: '../assets/dungeon/Puerta_Abriendose4.png'
     },
-
+    {
+        name: 'enemy_damage',
+        type: 'texture',
+        path: '../assets/dungeon/enemy_damage.png'
+    },
 
 ]    

@@ -57,7 +57,7 @@ export function inicializar_mapa(dungeon, tileSize, ubik, sources, character, pl
     for (let i = 0; i < position_enemies.length; i++) {
         const enemy = ubik.createObject();
         enemy.position.set(position_enemies[i][0], position_enemies[i][1], 0)
-        enemies.push(new Enemy(position_enemies[i][0], position_enemies[i][1], enemy, player));
+        enemies.push(new Enemy(position_enemies[i][0], position_enemies[i][1], enemy, player, ubik));
     }
 
     //==============Rellenar huecos de la mazmorra==================

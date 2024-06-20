@@ -1,5 +1,5 @@
 export default class Enemy {
-    constructor(x, y, enemy, player) {
+    constructor(x, y, enemy, player, ubik) {
         this.x = x;
         this.y = y;
         this.enemy = enemy;
@@ -9,6 +9,7 @@ export default class Enemy {
         this.player = player;
         this.life = 100; // Add life property to the enemy
         this.dead = false;
+        this.ubik = ubik;
     }
 
     update(dt) {
@@ -43,6 +44,12 @@ export default class Enemy {
         if (distance < 1 && this.player.isAttacking) {
             this.life -= 0.5; // Adjust the damage value as needed
             console.log('Enemy takes damage!', this.life);
+            // Damage texture
+            this.enemy.mesh.material.map = this.ubik.assets.get('enemy_damage');
+            setTimeout(() => {
+                // Normal texture
+                this.enemy.mesh.material.map = this.ubik.assets.get('enemigo');
+            }, 200);
             if (this.life <= 0) {
                 console.log('Enemy defeated!');
                 // Handle enemy defeat (e.g., remove enemy from scene)
