@@ -68,14 +68,14 @@ const WallsList=[]
 const player = new Player(0, 0, character, ubik, WallsList, key);
 const [enemies,WallsList2] = inicializar_mapa(dungeon, tileSize, ubik, sources, character, player, portal, key, THREE, CANNON);
 player.WallsList=WallsList2
-const Portal_1 = new Portal(portal, ubik);
+const Portal_1 = new Portal(portal, ubik, player);
 
 // Collision avoidance function for enemies
 function collisionAvoidance(enemies) {
     const minDistance = 1; // Minimum distance between enemies
     for (let i = 0; i < enemies.length; i++) {
         for (let j = i + 1; j < enemies.length; j++) {
-            const speed = 0.1;
+            const speed = 0.05;
             const dx = enemies[j].x - enemies[i].x;
             const dy = enemies[j].y - enemies[i].y;
             const distance = Math.sqrt(dx ** 2 + dy ** 2);

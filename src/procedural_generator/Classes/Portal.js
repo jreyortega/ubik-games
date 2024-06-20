@@ -1,12 +1,11 @@
-import gsap from 'gsap'
+import gsap from 'gsap';
 
-export default class Portal{
-    constructor(portal,ubik) {
-         // Track the current direction of the player
-         this.portal=portal
-         this.ubik=ubik
-         this.animationTimeline = null;
-         this.initAnimation();
+export default class Portal {
+    constructor(portal, ubik, player) {
+        this.portal = portal;
+        this.ubik = ubik;
+        this.player = player;
+        this.tileSize = 2; // Assuming the tile size is 2 units
     }
 
     initAnimation() {
@@ -39,6 +38,18 @@ export default class Portal{
     }
 
     update(dt) {
-        
+        this.checkCollisionWithPlayer();
+    }
+
+    checkCollisionWithPlayer() {
+        const playerPos = this.player.character.position;
+        const portalPos = this.portal.position;
+
+        if (Math.abs(playerPos.x - portalPos.x) < this.tileSize / 2 &&
+            Math.abs(playerPos.y - portalPos.y) < this.tileSize / 2) {
+            console.log("Player has entered the portal!");
+            this.initAnimation();
+            // Handle the player entering the portal (e.g., level transition, score update)
+        }
     }
 }

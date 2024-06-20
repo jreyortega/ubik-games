@@ -22,6 +22,7 @@ export default class Player {
         this.isAttacking = false; // Track if the player is attacking
         this.canAttack = true; // Track if the player can attack
         this.key = key;
+        this.haskey = false;
 
         // Light
         this.pointLightCharacter = ubik.light.createPoint('white', 2000);
@@ -34,8 +35,13 @@ export default class Player {
         this.specificLightCharacter.distance = 10;
         this.specificLightCharacter.decay = 4;
 
+        this.specificLightKey = ubik.light.createPoint('white', 15000);
+        this.specificLightKey.distance = 9.5;
+        this.specificLightKey.decay = 3.5;
+
         this.ubik.scene.add(this.pointLightCharacter);
         this.ubik.scene.add(this.specificLightCharacter);
+        this.ubik.scene.add(this.specificLightKey);
 
         // Reference to the camera
         this.camera = ubik.camera;
@@ -55,9 +61,13 @@ export default class Player {
         this.upCollision = 1;
 
         // Key collision check
+        this.specificLightKey.position.set(this.key.position.x, this.key.position.y, 9);
         if (Math.abs(this.character.position.x - this.key.position.x) < this.tileSize / 2 &&
             Math.abs(this.character.position.y - this.key.position.y) < this.tileSize / 2) {
             console.log("Player has the key!");
+            this.haskey = true;
+            this.key.mesh.visible = false;
+            this.specificLightKey.visible = false;
         }
 
         this.WallsList.forEach(wall => {
