@@ -150,7 +150,7 @@ export default class Player {
 
         if (this.ubik.input.isMouseClicked('left')) {
             const currentTime = performance.now();
-            if (currentTime - this.lastShotTime >= 1000) { // 5000 ms = 5 segundos
+            if (currentTime - this.lastShotTime >= 500) { // 5000 ms = 5 segundos
                 this.ubik.logger.info(`Mouse clicked at (${this.ubik.input.mouseX}, ${this.ubik.input.mouseY})`);
                 const angle = Math.atan2(this.ubik.input.mouseY - this.y, this.ubik.input.mouseX - this.x);
                 this.shoot(angle);

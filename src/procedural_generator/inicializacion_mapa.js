@@ -346,6 +346,11 @@ export function inicializar_mapa(dungeon, tileSize, ubik, sources, character, pl
     const UpWalls = [];
     const DownWalls = [];
 
+    var t_antorcha=0
+    const position_antorcha=[]
+    const point_light_position=[]
+    var ratio=6
+
     slabs.forEach(slab => {
 
         let posDown = slab.position.y - tileSize;
@@ -369,6 +374,15 @@ export function inicializar_mapa(dungeon, tileSize, ubik, sources, character, pl
                 newslab.rigidbody.position.set(slab.position.x, posUp, 0);
                 UpWalls.push(newslab);
 
+                if (t_antorcha == ratio ) {
+                    position_antorcha.push([slab.position.x, posUp])
+                    point_light_position.push([slab.position.x, posUp])
+                    t_antorcha = 0
+                    
+                }
+
+                t_antorcha=t_antorcha+1
+
                 const newslab2 = ubik.createObject();
                 ubik.addComponent(
                     newslab2,
@@ -394,6 +408,15 @@ export function inicializar_mapa(dungeon, tileSize, ubik, sources, character, pl
                 newslab.position.set(slab.position.x, posUp, 0);
                 newslab.rigidbody.position.set(slab.position.x, posUp, 0);
                 UpWalls.push(newslab);
+
+                if (t_antorcha == ratio ) {
+                    position_antorcha.push([slab.position.x, posUp])
+                    point_light_position.push([slab.position.x, posUp])
+                    t_antorcha = 0
+                    
+                }
+                
+                t_antorcha=t_antorcha+1
             }
         }
 
@@ -413,6 +436,13 @@ export function inicializar_mapa(dungeon, tileSize, ubik, sources, character, pl
                 newslab.rigidbody.position.set(slab.position.x, posUp, 0);
                 UpWalls.push(newslab);
 
+                if (t_antorcha == ratio ) {
+                    position_antorcha.push([slab.position.x , posUp ])
+                    point_light_position.push([slab.position.x , posUp])
+                    t_antorcha = 0
+                    
+                }
+                t_antorcha=t_antorcha+1
                 const newslab2 = ubik.createObject();
                 ubik.addComponent(
                     newslab2,
@@ -424,7 +454,7 @@ export function inicializar_mapa(dungeon, tileSize, ubik, sources, character, pl
                 newslab2.position.set(slab.position.x, posDown, 0);
                 newslab2.rigidbody.position.set(slab.position.x, posDown, 0);
                 DownWalls.push(newslab2);
-
+                    
             }
             else {
                 const newslab = ubik.createObject();
@@ -447,6 +477,25 @@ export function inicializar_mapa(dungeon, tileSize, ubik, sources, character, pl
     //=================Colocación paredes de las esquinas===============
 
     const LeftDownCornerWalls = [];
+
+    const antorchas=[]
+
+    for (let i = 0; i < position_antorcha.length; i++) {
+        const antorcha = ubik.createObject();
+        antorcha.position.set(position_antorcha[i][0], position_antorcha[i][1], 0)
+        antorchas.push(antorcha);
+    }
+
+    const points_light_antorchas=[]
+    
+    for (let i = 0; i < point_light_position.length; i++) {
+        const pointLightAntorcha = ubik.light.createPoint('#FFA500', 3000);
+        pointLightAntorcha.position.set(point_light_position[i][0], point_light_position[i][1], 10);
+        pointLightAntorcha.distance = 15;
+        pointLightAntorcha.decay = 3.8;
+        ubik.scene.add(pointLightAntorcha);
+        points_light_antorchas.push(pointLightAntorcha)
+    }
 
     slabs.forEach(slab => {
 
@@ -691,6 +740,12 @@ export function inicializar_mapa(dungeon, tileSize, ubik, sources, character, pl
         const keyMaterial = new THREE.MeshStandardMaterial({ map: ubik.assets.get('llave'), transparent: true, alphaTest: 0.5 });
         ubik.addComponent(key, 'mesh', ubik.mesh.createFromGeometry(keyGeometry, keyMaterial));
 
+        //----------Assets Antorchas------------
+        const AntorchaGeometry = new THREE.PlaneGeometry(tileSize, tileSize);
+        const AntorchaMaterial = new THREE.MeshStandardMaterial({ map: ubik.assets.get('antorcha'), transparent: true, alphaTest: 0.5 });
+        antorchas.forEach((antorcha)=>{
+            ubik.addComponent(antorcha, 'mesh', ubik.mesh.createFromGeometry(AntorchaGeometry, AntorchaMaterial));
+        });
     });
     const WallsList2=DownWalls.concat(UpWalls,RightSideWalls,LeftSideWalls,LeftDownCornerWalls,RightDownCornerWalls,RightUpCornerWallsFillUp,RightUpCornerWalls,LeftUpCornerWalls,LeftUpCornerWallsFillUp)
     

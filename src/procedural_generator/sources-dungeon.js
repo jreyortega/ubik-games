@@ -191,5 +191,10 @@ export default [
         type: 'texture',
         path: '../assets/dungeon/enemy_damage.png'
     },
+    {
+        name: 'antorcha',
+        type: 'texture',
+        path: '../assets/dungeon/Antorcha1.png'
+    },
 
 ]    
