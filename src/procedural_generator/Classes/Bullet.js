@@ -101,9 +101,13 @@ export default class Bullet {
             }
         });
 
+        this.bullet.mesh.map = this.ubik.assets.get('explosion');
+
         // Remove the bullet from the scene and physics world
-        this.ubik.scene.remove(this.bullet.mesh);
-        this.ubik.physics.world.removeBody(this.bullet.rigidbody);
+        setTimeout(() => {
+            this.ubik.scene.remove(this.bullet.mesh);
+            this.ubik.physics.world.removeBody(this.bullet.rigidbody);
+        }, 200);
     }
 
     startLifetimeTimer() {

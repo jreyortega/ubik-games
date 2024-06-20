@@ -16,6 +16,11 @@ export default [
         path: '../assets/dungeon/Right_side_wall2.png'
     },
     {
+        name: 'explosion',
+        type: 'texture',
+        path: '../assets/dungeon/explosion.png'
+    },
+    {
         name:'Down_Wall',
         type: 'texture',
         path: '../assets/dungeon/Down_Wall2.png'
