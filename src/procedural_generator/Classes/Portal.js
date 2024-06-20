@@ -49,7 +49,9 @@ export default class Portal {
         if (Math.abs(playerPos.x - portalPos.x) < this.tileSize / 2 &&
             Math.abs(playerPos.y - portalPos.y) < this.tileSize / 2) {
             console.log("Player has entered the portal!");
+            console.log(this.player.hasKey, this.animationRunning);
             if (!this.animationRunning && this.player.hasKey) {
+                console.log("Portal animation started!");
                 this.animationRunning = true;
                 this.initAnimation();
             }

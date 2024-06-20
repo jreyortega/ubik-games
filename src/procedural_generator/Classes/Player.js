@@ -22,7 +22,7 @@ export default class Player {
         this.isAttacking = false; // Track if the player is attacking
         this.canAttack = true; // Track if the player can attack
         this.key = key;
-        this.haskey = false;
+        this.hasKey = false;
 
         // Light
         this.pointLightCharacter = ubik.light.createPoint('white', 2000);
@@ -65,7 +65,7 @@ export default class Player {
         if (Math.abs(this.character.position.x - this.key.position.x) < this.tileSize / 2 &&
             Math.abs(this.character.position.y - this.key.position.y) < this.tileSize / 2) {
             console.log("Player has the key!");
-            this.haskey = true;
+            this.hasKey = true;
             this.key.mesh.visible = false;
             this.specificLightKey.visible = false;
         }
