@@ -60,6 +60,8 @@ export default class Enemy {
                 this.enemy.mesh.material.map = this.ubik.assets.get('enemy_dead');
                 setTimeout(() => {
                     this.enemy.mesh.visible = false;
+                    this.x = 10000;
+                    this.y = 10000;
                 }, 300);
             }
         }
@@ -87,5 +89,14 @@ export default class Enemy {
                 this.enemy.mesh.material.map = this.ubik.assets.get('enemigo');
             }
         }, 200);
+    }
+
+    enemyDead(){
+        this.enemy.mesh.material.map = this.ubik.assets.get('enemy_dead');
+        setTimeout(() => {
+            this.enemy.mesh.visible = false;
+            this.x = 10000;
+            this.y = 10000;
+        }, 300);
     }
 }

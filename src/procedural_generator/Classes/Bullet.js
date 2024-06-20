@@ -58,12 +58,20 @@ export default class Bullet {
         this.enemies.forEach(enemy => {
             enemy.bullets.push(this);
         });
+
+        this.specificLightBullet = ubik.light.createPoint('white', 7000);
+        this.specificLightBullet.position.set(this.x, this.y, 9);
+        this.specificLightBullet.distance = 10;
+        this.specificLightBullet.decay = 4;
+
+        this.ubik.scene.add(this.specificLightBullet);
     }
 
     update(dt) {
         this.bullet.position.copy(this.bullet.rigidbody.position);
         this.bullet.mesh.position.copy(this.bullet.rigidbody.position);
-
+        this.specificLightBullet.position.copy(this.bullet.rigidbody.position);
+        this.specificLightBullet.position.z = 9;
         this.checkCollisionsWithEnemies();
     }
 
@@ -83,7 +91,7 @@ export default class Bullet {
         enemy.enemyCollisionDamage();
         if (enemy.life <= 0) {
             enemy.dead = true;
-            enemy.enemy.mesh.visible = false; // Hide enemy mesh
+            enemy.enemyDead();
             console.log('Enemy defeated!');
         }
 
@@ -102,11 +110,13 @@ export default class Bullet {
         });
 
         this.bullet.mesh.material.map = this.ubik.assets.get('explosion');
+        this.specificLightBullet.color = new THREE.Color(0xffcc4a);
 
         // Remove the bullet from the scene and physics world
         setTimeout(() => {
             this.ubik.scene.remove(this.bullet.mesh);
             this.ubik.physics.world.removeBody(this.bullet.rigidbody);
+            this.ubik.scene.remove(this.specificLightBullet);
         }, 200);
     }
 
@@ -127,11 +137,13 @@ export default class Bullet {
             });
 
             this.bullet.mesh.material.map = this.ubik.assets.get('explosion');
+            this.specificLightBullet.color = new THREE.Color(0xffcc4a);
 
             // Remove the bullet from the scene and physics world
             setTimeout(() => {
                 this.ubik.scene.remove(this.bullet.mesh);
                 this.ubik.physics.world.removeBody(this.bullet.rigidbody);
+                this.ubik.scene.remove(this.specificLightBullet);
             }, 200);
         }, 5000);
     }
