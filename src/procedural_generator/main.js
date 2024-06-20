@@ -13,15 +13,21 @@ window.addEventListener('DOMContentLoaded', (event) => {
     const backgroundMusic = document.getElementById('background-music');
     const audioButton = document.getElementById('audio-button');
 
-    // Function to play the audio
-    const playAudio = () => {
-        backgroundMusic.play().catch(error => {
-            console.error("Failed to play audio:", error);
-        });
+    // Function to toggle the audio
+    const toggleAudio = () => {
+        if (backgroundMusic.paused) {
+            backgroundMusic.play().catch(error => {
+                console.error("Failed to play audio:", error);
+            });
+            audioButton.src = "audio.png"; // Change to an icon indicating music is playing
+        } else {
+            backgroundMusic.pause();
+            audioButton.src = "noaudio.png"; // Change back to the default icon
+        }
     };
 
-    // Listen for the button click to play audio
-    audioButton.addEventListener('click', playAudio);
+    // Listen for the button click to toggle audio
+    audioButton.addEventListener('click', toggleAudio);
 });
 
 
