@@ -59,7 +59,7 @@ export default class Enemy {
                 this.enemy.mesh.material.map = this.ubik.assets.get('enemy_dead');
                 setTimeout(() => {
                     this.enemy.mesh.visible = false;
-                }, 400);
+                }, 300);
             }
         }
 
