@@ -7,6 +7,8 @@ export default class Enemy {
         this.damageCooldown = 200;
         this.lastDamageTime = 0;
         this.player = player;
+        this.life = 100; // Add life property to the enemy
+        this.dead = false;
     }
 
     update(dt) {
@@ -19,16 +21,17 @@ export default class Enemy {
         // Check for sight collision
         if (distance < 15 && !this.playerSeen) {
             // Handle collision
-                console.log('Player seen!');
-                this.playerSeen = true;
+            console.log('Player seen!');
+            this.playerSeen = true;
         }
 
-        // Check for damage collision
+        // Check for damage collision from enemy to player
         const currentTime = Date.now();
-        if (distance < 1 && currentTime - this.lastDamageTime > this.damageCooldown) {
+        if (distance < 1 && currentTime - this.lastDamageTime > this.damageCooldown && !this.dead) {
             // Handle collision
             this.lastDamageTime = currentTime;
             this.player.life -= 0.5;
+            console.log('Player takes damage!');
             if (this.player.life <= 0) {
                 this.player.life = 0;
                 document.getElementById('life').innerText = `Life: ${this.player.life}`;
@@ -36,7 +39,19 @@ export default class Enemy {
             }
         }
 
-        //Move enemy towards player
+        // Check for damage collision from player to enemy
+        if (distance < 1 && this.player.isAttacking) {
+            this.life -= 0.5; // Adjust the damage value as needed
+            console.log('Enemy takes damage!', this.life);
+            if (this.life <= 0) {
+                console.log('Enemy defeated!');
+                // Handle enemy defeat (e.g., remove enemy from scene)
+                this.enemy.mesh.visible = false;
+                this.dead = true;
+            }
+        }
+
+        // Move enemy towards player
         if (this.playerSeen && distance > 1) {
             const speed = 0.025; // Adjust the speed here
             const dx = this.player.x - this.x;
