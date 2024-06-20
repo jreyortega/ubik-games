@@ -648,9 +648,9 @@ export function inicializar_mapa(dungeon, tileSize, ubik, sources, character, pl
         ubik.addComponent(character, 'mesh', ubik.mesh.createFromGeometry(playerGeometry, playerMaterial));
 
         //----------Assets enemigo---------
-        const enemyGeometry = new THREE.PlaneGeometry(tileSize, tileSize);
-        const enemyMaterial = new THREE.MeshStandardMaterial({ map: ubik.assets.get('enemigo'), transparent: true, alphaTest: 0.5 });
         enemies.forEach((enemy) => {
+            const enemyGeometry = new THREE.PlaneGeometry(tileSize, tileSize);
+            const enemyMaterial = new THREE.MeshStandardMaterial({ map: ubik.assets.get('enemigo'), transparent: true, alphaTest: 0.5 });
             ubik.addComponent(enemy.enemy, 'mesh', ubik.mesh.createFromGeometry(enemyGeometry, enemyMaterial));
         });
         //----------Assets portal---------

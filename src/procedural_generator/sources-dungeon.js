@@ -77,6 +77,11 @@ export default [
         path: '../assets/dungeon/Enemigo.png'
     },
     {
+        name: 'enemy_dead',
+        type: 'texture',
+        path: '../assets/dungeon/enemy_dead.png'
+    },
+    {
         name:'llave',
         type: 'texture',
         path: '../assets/dungeon/Llave.png'

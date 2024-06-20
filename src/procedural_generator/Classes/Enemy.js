@@ -48,18 +48,23 @@ export default class Enemy {
             this.enemy.mesh.material.map = this.ubik.assets.get('enemy_damage');
             setTimeout(() => {
                 // Normal texture
-                this.enemy.mesh.material.map = this.ubik.assets.get('enemigo');
+                if (!this.dead) {
+                    this.enemy.mesh.material.map = this.ubik.assets.get('enemigo');
+                }
             }, 200);
             if (this.life <= 0) {
                 console.log('Enemy defeated!');
-                // Handle enemy defeat (e.g., remove enemy from scene)
-                this.enemy.mesh.visible = false;
                 this.dead = true;
+                // Handle enemy defeat (e.g., remove enemy from scene)
+                this.enemy.mesh.material.map = this.ubik.assets.get('enemy_dead');
+                setTimeout(() => {
+                    this.enemy.mesh.visible = false;
+                }, 400);
             }
         }
 
         // Move enemy towards player
-        if (this.playerSeen && distance > 1) {
+        if (this.playerSeen && distance > 1 && !this.dead) {
             const speed = 0.025; // Adjust the speed here
             const dx = this.player.x - this.x;
             const dy = this.player.y - this.y;
