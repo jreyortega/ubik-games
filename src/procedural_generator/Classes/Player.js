@@ -41,9 +41,9 @@ export default class Player {
         this.specificLightCharacter.distance = 10;
         this.specificLightCharacter.decay = 4;
 
-        this.specificLightKey = ubik.light.createPoint('white', 15000);
-        this.specificLightKey.distance = 9.5;
-        this.specificLightKey.decay = 3.5;
+        this.specificLightKey = ubik.light.createPoint('white', 10000);
+        this.specificLightKey.distance = 10;
+        this.specificLightKey.decay = 4;
 
         this.ubik.scene.add(this.pointLightCharacter);
         this.ubik.scene.add(this.specificLightCharacter);
