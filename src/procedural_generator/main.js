@@ -65,11 +65,9 @@ const portal = ubik.createObject();
 //--------Inicialización del objeto llave--------
 const key = ubik.createObject();
 const WallsList=[]
-const player = new Player(0, 0, character, ubik,WallsList);
+const player = new Player(0, 0, character, ubik, WallsList, key);
 const [enemies,WallsList2] = inicializar_mapa(dungeon, tileSize, ubik, sources, character, player, portal, key, THREE, CANNON);
 player.WallsList=WallsList2
-
-console.log("WallsList//////////////////////////////////////////////////////////////////////////////////",player.WallsList)
 const Portal_1 = new Portal(portal, ubik);
 
 // Collision avoidance function for enemies

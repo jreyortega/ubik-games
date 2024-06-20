@@ -2,7 +2,7 @@ import * as CANNON from 'cannon-es';
 import gsap from 'gsap';
 
 export default class Player {
-    constructor(x, y, character, ubik, WallsList) {
+    constructor(x, y, character, ubik, WallsList, key) {
         this.x = x;
         this.y = y;
         this.character = character;
@@ -13,14 +13,15 @@ export default class Player {
         this.currentDirection = null; // Track the current direction of the player
         this.lastDirection = null; // Track the last direction of the player
         this.life = 100; // Player life
-        this.upCollision = 1
-        this.rightCollision = 1
-        this.downCollision = 1
-        this.leftCollision = 1
-        this.WallsList = WallsList
-        this.tileSize = 2
+        this.upCollision = 1;
+        this.rightCollision = 1;
+        this.downCollision = 1;
+        this.leftCollision = 1;
+        this.WallsList = WallsList;
+        this.tileSize = 2;
         this.isAttacking = false; // Track if the player is attacking
         this.canAttack = true; // Track if the player can attack
+        this.key = key;
 
         // Light
         this.pointLightCharacter = ubik.light.createPoint('white', 2000);
@@ -53,8 +54,13 @@ export default class Player {
         this.downCollision = 1;
         this.upCollision = 1;
 
-        this.WallsList.forEach(wall => {
+        // Key collision check
+        if (Math.abs(this.character.position.x - this.key.position.x) < this.tileSize / 2 &&
+            Math.abs(this.character.position.y - this.key.position.y) < this.tileSize / 2) {
+            console.log("Player has the key!");
+        }
 
+        this.WallsList.forEach(wall => {
             let deltaX = this.character.position.x - wall.position.x;
             let deltaY = this.character.position.y - wall.position.y;
 
@@ -65,7 +71,6 @@ export default class Player {
 
                 this.leftCollision = 0;
                 this.character.position.x = wall.position.x + this.tileSize;
-
             }
 
             if (
@@ -74,7 +79,6 @@ export default class Player {
                 wall.position.y + this.tileSize / 2 > this.character.position.y && this.character.position.y > wall.position.y - this.tileSize / 2) {
                 this.rightCollision = 0;
                 this.character.position.x = wall.position.x - this.tileSize;
-
             }
 
             if (this.character.position.y + this.tileSize / 2 > wall.position.y - this.tileSize / 2 - tolerancia &&
@@ -82,7 +86,6 @@ export default class Player {
                 wall.position.x + this.tileSize / 2 > this.character.position.x && this.character.position.x > wall.position.x - this.tileSize / 2) {
                 this.downCollision = 0;
                 this.character.position.y = wall.position.y - this.tileSize;
-
             }
 
             if (this.character.position.y - this.tileSize / 2 < wall.position.y + this.tileSize / 2 + tolerancia &&
@@ -90,7 +93,6 @@ export default class Player {
                 wall.position.x + this.tileSize / 2 > this.character.position.x && this.character.position.x > wall.position.x - this.tileSize / 2) {
                 this.upCollision = 0;
                 this.character.position.y = wall.position.y + this.tileSize;
-
             }
         });
 
@@ -178,7 +180,6 @@ export default class Player {
         document.getElementById('life').innerText = `Life: ${this.life}`;
     }
 
-
     updateCamera() {
         // Set the camera to follow the player
         this.camera.follow({ x: this.x, y: this.y }, { x: 0, y: 0, z: 125 }, 2.5); // Adjust offset and zoom as needed
@@ -231,7 +232,7 @@ export default class Player {
                 const textureName = this.isAttacking ? 'player_attacking_left' : `player_walk_left${this.animationTimeline.time() % 0.25 < 0.125 ? 1 : 2}`;
                 const texture = this.ubik.assets.get(textureName);
 
-                if (texture) {
+                if (texture && this.character.mesh) {
                     this.character.mesh.material.map = texture;
                     this.character.mesh.material.needsUpdate = true;
                 }
@@ -247,7 +248,7 @@ export default class Player {
                 const textureName = this.isAttacking ? 'player_attacking_up' : `player_walk_up${this.animationTimeline.time() % 0.25 < 0.125 ? 1 : 2}`;
                 const texture = this.ubik.assets.get(textureName);
 
-                if (texture) {
+                if (texture && this.character.mesh) {
                     this.character.mesh.material.map = texture;
                     this.character.mesh.material.needsUpdate = true;
                 }
@@ -263,7 +264,7 @@ export default class Player {
                 const textureName = this.isAttacking ? 'player_attacking_down' : `player_walk_down${this.animationTimeline.time() % 0.25 < 0.125 ? 1 : 2}`;
                 const texture = this.ubik.assets.get(textureName);
 
-                if (texture) {
+                if (texture && this.character.mesh) {
                     this.character.mesh.material.map = texture;
                     this.character.mesh.material.needsUpdate = true;
                 }
