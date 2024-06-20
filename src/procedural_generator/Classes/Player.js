@@ -13,6 +13,8 @@ export default class Player {
         this.currentDirection = null; // Track the current direction of the player
         this.lastDirection = null; // Track the last direction of the player
         this.life = 100; // Player life
+        this.isAttacking = false; // Track if the player is attacking
+        this.canAttack = true; // Track if the player can attack
 
         // Light
         this.pointLightCharacter = ubik.light.createPoint('white', 2000);
@@ -60,8 +62,15 @@ export default class Player {
             newDirection = 'right';
             isMoving = true;
         }
-        if(this.ubik.input.isKeyPressed(' ')){
-            this.startAttackingAnimationLeft();
+        if (this.ubik.input.isKeyPressed(' ') && this.canAttack) {
+            this.isAttacking = true;
+            this.canAttack = false;
+            setTimeout(() => {
+                this.isAttacking = false;
+                setTimeout(() => {
+                    this.canAttack = true;
+                }, 1000);
+            }, 1000);
         }
 
         if (isMoving) {
@@ -125,9 +134,7 @@ export default class Player {
             duration: 0.25,
             repeat: -1,
             onUpdate: () => {
-                const progress = this.animationTimeline.time() % 0.25;
-                const frameIndex = progress < 0.125 ? 1 : 2;
-                const textureName = `player_walk_right${frameIndex}`;
+                const textureName = this.isAttacking ? 'player_attacking_right' : `player_walk_right${this.animationTimeline.time() % 0.25 < 0.125 ? 1 : 2}`;
                 const texture = this.ubik.assets.get(textureName);
 
                 if (texture) {
@@ -143,9 +150,7 @@ export default class Player {
             duration: 0.25,
             repeat: -1,
             onUpdate: () => {
-                const progress = this.animationTimeline.time() % 0.25;
-                const frameIndex = progress < 0.125 ? 1 : 2;
-                const textureName = `player_walk_left${frameIndex}`;
+                const textureName = this.isAttacking ? 'player_attacking_left' : `player_walk_left${this.animationTimeline.time() % 0.25 < 0.125 ? 1 : 2}`;
                 const texture = this.ubik.assets.get(textureName);
 
                 if (texture) {
@@ -161,9 +166,7 @@ export default class Player {
             duration: 0.25,
             repeat: -1,
             onUpdate: () => {
-                const progress = this.animationTimeline.time() % 0.25;
-                const frameIndex = progress < 0.125 ? 1 : 2;
-                const textureName = `player_walk_up${frameIndex}`;
+                const textureName = this.isAttacking ? 'player_attacking_up' : `player_walk_up${this.animationTimeline.time() % 0.25 < 0.125 ? 1 : 2}`;
                 const texture = this.ubik.assets.get(textureName);
 
                 if (texture) {
@@ -179,9 +182,7 @@ export default class Player {
             duration: 0.25,
             repeat: -1,
             onUpdate: () => {
-                const progress = this.animationTimeline.time() % 0.25;
-                const frameIndex = progress < 0.125 ? 1 : 2;
-                const textureName = `player_walk_down${frameIndex}`;
+                const textureName = this.isAttacking ? 'player_attacking_down' : `player_walk_down${this.animationTimeline.time() % 0.25 < 0.125 ? 1 : 2}`;
                 const texture = this.ubik.assets.get(textureName);
 
                 if (texture) {
@@ -199,24 +200,4 @@ export default class Player {
             this.animationStarted = false;
         }
     }
-
-    startAttackingAnimationLeft() {
-        this.animationTimeline = gsap.to({}, {
-            duration: 0.1,
-            repeat: 1,
-            onUpdate: () => {
-                const progress = this.animationTimeline.time() % 0.1;
-                const frameIndex = progress < 0.05 ? 1 : 2;
-                const textureName = `player_attacking_right`;
-                const texture = this.ubik.assets.get(textureName);
-
-                if (texture) {
-                    this.character.mesh.material.map = texture;
-                    this.character.mesh.material.needsUpdate = true;
-                }
-            }
-        });
-    }
-
-    
 }

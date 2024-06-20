@@ -127,6 +127,26 @@ export default [
         path: '../assets/player/player_walk_down2.png'
     },
     {
+        name:'player_attacking_right',
+        type: 'texture',
+        path: '../assets/player/player_attacking_right.png'
+    },
+    {
+        name:'player_attacking_left',
+        type: 'texture',
+        path: '../assets/player/player_attacking_left.png'
+    },
+    {
+        name:'player_attacking_up',
+        type: 'texture',
+        path: '../assets/player/player_attacking_up.png'
+    },
+    {
+        name:'player_attacking_down',
+        type: 'texture',
+        path: '../assets/player/player_attacking_down.png'
+    },
+    {
         name:'portal_closed',
         type: 'texture',
         path: '../assets/dungeon/Puerta.png'
