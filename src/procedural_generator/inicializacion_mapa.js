@@ -9,6 +9,14 @@ export function inicializar_mapa(dungeon, tileSize, ubik, sources, character, pl
         return occupiedPositions.has(posKey);
     }
 
+    const material = new CANNON.Material('defaultMaterial');
+    const contactMaterial = new CANNON.ContactMaterial(material, material, {
+        friction: 0.1,
+        restitution: 1,
+    });
+
+    ubik.physics.world.addContactMaterial(contactMaterial);
+
     const occupiedPositions = new Set();
 
     //###################################CREACIÓN DE LA MAZMORRA##################################
@@ -232,7 +240,7 @@ export function inicializar_mapa(dungeon, tileSize, ubik, sources, character, pl
         })
     }
 
-    const tam = new CANNON.Vec3(tileSize / 2, tileSize / 2, tileSize / 2)
+    const tam = new CANNON.Vec3(tileSize / 3, tileSize / 3, tileSize)
 
     //=================Colocación paredes laterales===============
     const LeftSideWalls = [];
@@ -254,9 +262,10 @@ export function inicializar_mapa(dungeon, tileSize, ubik, sources, character, pl
                     'rigidbody',
                     ubik.physics.createBody({
                         mass: 1,
-                        shape: new CANNON.Box(tam)
+                        shape: new CANNON.Box(tam),material:contactMaterial
                     }))
                 newslab.position.set(posRight, slab.position.y, 0);
+                newslab.rigidbody.position.set(posRight, slab.position.y, 0);
                 RightSideWalls.push(newslab);
 
                 const newslab2 = ubik.createObject();
@@ -265,9 +274,10 @@ export function inicializar_mapa(dungeon, tileSize, ubik, sources, character, pl
                     'rigidbody',
                     ubik.physics.createBody({
                         mass: 1,
-                        shape: new CANNON.Box(tam)
+                        shape: new CANNON.Box(tam),material:contactMaterial
                     }))
                 newslab2.position.set(posLeft, slab.position.y, 0);
+                newslab2.rigidbody.position.set(posLeft, slab.position.y, 0);
                 LeftSideWalls.push(newslab2);
 
             }
@@ -278,9 +288,10 @@ export function inicializar_mapa(dungeon, tileSize, ubik, sources, character, pl
                     'rigidbody',
                     ubik.physics.createBody({
                         mass: 0,
-                        shape: new CANNON.Box(tam)
+                        shape: new CANNON.Box(tam),material:contactMaterial
                     }))
                 newslab2.position.set(posLeft, slab.position.y, 0);
+                newslab2.rigidbody.position.set(posLeft, slab.position.y, 0);
                 LeftSideWalls.push(newslab2);
             }
         }
@@ -295,9 +306,10 @@ export function inicializar_mapa(dungeon, tileSize, ubik, sources, character, pl
                     'rigidbody',
                     ubik.physics.createBody({
                         mass: 0,
-                        shape: new CANNON.Box(tam)
+                        shape: new CANNON.Box(tam),material:contactMaterial
                     }))
                 newslab.position.set(posRight, slab.position.y, 0);
+                newslab.rigidbody.position.set(posRight, slab.position.y, 0);
                 RightSideWalls.push(newslab);
 
                 const newslab2 = ubik.createObject();
@@ -306,9 +318,10 @@ export function inicializar_mapa(dungeon, tileSize, ubik, sources, character, pl
                     'rigidbody',
                     ubik.physics.createBody({
                         mass: 0,
-                        shape: new CANNON.Box(tam)
+                        shape: new CANNON.Box(tam),material:contactMaterial
                     }))
                 newslab2.position.set(posLeft, slab.position.y, 0);
+                newslab2.rigidbody.position.set(posLeft, slab.position.y, 0);
                 LeftSideWalls.push(newslab2);
 
             }
@@ -319,9 +332,10 @@ export function inicializar_mapa(dungeon, tileSize, ubik, sources, character, pl
                     'rigidbody',
                     ubik.physics.createBody({
                         mass: 0,
-                        shape: new CANNON.Box(tam)
+                        shape: new CANNON.Box(tam),material:contactMaterial
                     }))
                 newslab2.position.set(posRight, slab.position.y, 0);
+                newslab2.rigidbody.position.set(posRight, slab.position.y, 0);
                 RightSideWalls.push(newslab2);
             }
         }
@@ -349,9 +363,10 @@ export function inicializar_mapa(dungeon, tileSize, ubik, sources, character, pl
                     'rigidbody',
                     ubik.physics.createBody({
                         mass: 0,
-                        shape: new CANNON.Box(tam)
+                        shape: new CANNON.Box(tam),material:contactMaterial
                     }))
                 newslab.position.set(slab.position.x, posUp, 0);
+                newslab.rigidbody.position.set(slab.position.x, posUp, 0);
                 UpWalls.push(newslab);
 
                 const newslab2 = ubik.createObject();
@@ -360,9 +375,10 @@ export function inicializar_mapa(dungeon, tileSize, ubik, sources, character, pl
                     'rigidbody',
                     ubik.physics.createBody({
                         mass: 0,
-                        shape: new CANNON.Box(tam)
+                        shape: new CANNON.Box(tam),material:contactMaterial
                     }))
                 newslab2.position.set(slab.position.x, posDown, 0);
+                newslab2.rigidbody.position.set(slab.position.x, posDown, 0);
                 DownWalls.push(newslab2);
 
             }
@@ -373,9 +389,10 @@ export function inicializar_mapa(dungeon, tileSize, ubik, sources, character, pl
                     'rigidbody',
                     ubik.physics.createBody({
                         mass: 0,
-                        shape: new CANNON.Box(tam)
+                        shape: new CANNON.Box(tam),material:contactMaterial
                     }))
                 newslab.position.set(slab.position.x, posUp, 0);
+                newslab.rigidbody.position.set(slab.position.x, posUp, 0);
                 UpWalls.push(newslab);
             }
         }
@@ -390,9 +407,10 @@ export function inicializar_mapa(dungeon, tileSize, ubik, sources, character, pl
                     'rigidbody',
                     ubik.physics.createBody({
                         mass: 0,
-                        shape: new CANNON.Box(tam)
+                        shape: new CANNON.Box(tam),material:contactMaterial
                     }))
                 newslab.position.set(slab.position.x, posUp, 0);
+                newslab.rigidbody.position.set(slab.position.x, posUp, 0);
                 UpWalls.push(newslab);
 
                 const newslab2 = ubik.createObject();
@@ -401,9 +419,10 @@ export function inicializar_mapa(dungeon, tileSize, ubik, sources, character, pl
                     'rigidbody',
                     ubik.physics.createBody({
                         mass: 0,
-                        shape: new CANNON.Box(tam)
+                        shape: new CANNON.Box(tam),material:contactMaterial
                     }))
                 newslab2.position.set(slab.position.x, posDown, 0);
+                newslab2.rigidbody.position.set(slab.position.x, posDown, 0);
                 DownWalls.push(newslab2);
 
             }
@@ -414,9 +433,10 @@ export function inicializar_mapa(dungeon, tileSize, ubik, sources, character, pl
                     'rigidbody',
                     ubik.physics.createBody({
                         mass: 0,
-                        shape: new CANNON.Box(tam)
+                        shape: new CANNON.Box(tam),material:contactMaterial
                     }))
                 newslab.position.set(slab.position.x, posDown, 0);
+                newslab.rigidbody.position.set(slab.position.x, posDown, 0);
                 DownWalls.push(newslab);
             }
         }
@@ -442,9 +462,10 @@ export function inicializar_mapa(dungeon, tileSize, ubik, sources, character, pl
                 'rigidbody',
                 ubik.physics.createBody({
                     mass: 0,
-                    shape: new CANNON.Box(tam)
+                    shape: new CANNON.Box(tam),material:contactMaterial
                 }))
             newslab.position.set(posLeft, posDown, 0);
+            newslab.rigidbody.position.set(posLeft, posDown, 0);
             LeftDownCornerWalls.push(newslab);
         }
         if (isPositionOccupied(slab.position.x, posUp) && isPositionOccupied(posRight, slab.position.y) && !isPositionOccupied(posRight, posUp)) {
@@ -454,9 +475,10 @@ export function inicializar_mapa(dungeon, tileSize, ubik, sources, character, pl
                 'rigidbody',
                 ubik.physics.createBody({
                     mass: 0,
-                    shape: new CANNON.Box(tam)
+                    shape: new CANNON.Box(tam),material:contactMaterial
                 }))
             newslab.position.set(posRight, posUp, 0);
+            newslab.rigidbody.position.set(posRight, posUp, 0);
             UpWalls.push(newslab);
         }
     });
@@ -477,9 +499,10 @@ export function inicializar_mapa(dungeon, tileSize, ubik, sources, character, pl
                 'rigidbody',
                 ubik.physics.createBody({
                     mass: 0,
-                    shape: new CANNON.Box(tam)
+                    shape: new CANNON.Box(tam),material:contactMaterial
                 }))
             newslab.position.set(posRight, posDown, 0);
+            newslab.rigidbody.position.set(posRight, posDown, 0);
             RightDownCornerWalls.push(newslab);
         }
 
@@ -490,9 +513,10 @@ export function inicializar_mapa(dungeon, tileSize, ubik, sources, character, pl
                 'rigidbody',
                 ubik.physics.createBody({
                     mass: 0,
-                    shape: new CANNON.Box(tam)
+                    shape: new CANNON.Box(tam),material:contactMaterial
                 }))
             newslab.position.set(posLeft, posUp, 0);
+            newslab.rigidbody.position.set(posLeft, posUp, 0);
             UpWalls.push(newslab);
         }
     });
@@ -513,9 +537,10 @@ export function inicializar_mapa(dungeon, tileSize, ubik, sources, character, pl
                 'rigidbody',
                 ubik.physics.createBody({
                     mass: 1,
-                    shape: new CANNON.Box(tam)
+                    shape: new CANNON.Box(tam),material:contactMaterial
                 }))
             newslab.position.set(posRight, posUp, 0);
+            newslab.rigidbody.position.set(posRight, posUp, 0);
             RightUpCornerWalls.push(newslab);
         }
 
@@ -526,9 +551,10 @@ export function inicializar_mapa(dungeon, tileSize, ubik, sources, character, pl
                 'rigidbody',
                 ubik.physics.createBody({
                     mass: 0,
-                    shape: new CANNON.Box(tam)
+                    shape: new CANNON.Box(tam),material:contactMaterial
                 }))
             newslab.position.set(posLeft, posDown, 0);
+            newslab.rigidbody.position.set(posLeft, posDown, 0);
             RightUpCornerWallsFillUp.push(newslab);
         }
     });
@@ -549,9 +575,10 @@ export function inicializar_mapa(dungeon, tileSize, ubik, sources, character, pl
                 'rigidbody',
                 ubik.physics.createBody({
                     mass: 0,
-                    shape: new CANNON.Box(tam)
+                    shape: new CANNON.Box(tam),material:contactMaterial
                 }))
             newslab.position.set(posLeft, posUp, 0);
+            newslab.rigidbody.position.set(posLeft, posUp, 0);
             LeftUpCornerWalls.push(newslab);
         }
 
@@ -562,9 +589,10 @@ export function inicializar_mapa(dungeon, tileSize, ubik, sources, character, pl
                 'rigidbody',
                 ubik.physics.createBody({
                     mass: 0,
-                    shape: new CANNON.Box(tam)
+                    shape: new CANNON.Box(tam),material:contactMaterial
                 }))
             newslab.position.set(posRight, posDown, 0);
+            newslab.rigidbody.position.set(posRight, posDown, 0);
             LeftUpCornerWallsFillUp.push(newslab);
         }
     });
