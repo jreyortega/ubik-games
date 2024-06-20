@@ -46,8 +46,6 @@ document.getElementById('level').innerText = `Level: ${level}`;
 
 const ubik = new Ubik({ cameraType: 'orthographic' });
 
-// Gravity
-ubik.physics.world.gravity.set(0, -9.82, 0);
 
 // Light
 const ambientLight = ubik.light.createAmbient('white', 0.0025);
@@ -63,14 +61,7 @@ const dungeon = dungeonGenerator.runProceduralGeneration();
 const tam = new CANNON.Vec3(tileSize / 2, tileSize / 2, tileSize / 2);
 const character = ubik.createObject();
 character.position.set(0, 0, 0);
-ubik.addComponent(
-    character,
-    'rigidbody',
-    ubik.physics.createBody({
-        mass: 1,
-        shape: new CANNON.Box(tam)
-    })
-);
+
 
 // Inicializción del objeto portal
 const portal = ubik.createObject();
@@ -113,7 +104,9 @@ ubik.update = (dt) => {
         enemy.update(dt);
     });
     collisionAvoidance(enemies);
-
+    for (let i = 0; i < player.bullets.length; i++) {
+        player.bullets[i].update(dt);
+    }
     // Check if the next level should be loaded
     if (Portal_1.getNextLevel()) {
         const nextLevel = level + 1;

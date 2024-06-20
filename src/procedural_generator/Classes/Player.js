@@ -1,6 +1,6 @@
 import * as CANNON from 'cannon-es';
 import gsap from 'gsap';
-
+import Bullet from './Bullet.js';
 export default class Player {
     constructor(x, y, character, ubik, WallsList, key) {
         this.x = x;
@@ -23,6 +23,11 @@ export default class Player {
         this.canAttack = true; // Track if the player can attack
         this.key = key;
         this.hasKey = false;
+
+        //Bullet
+        this.tileSize=2
+        this.bullets=[];
+        this.lastShotTime=0
 
         // Light
         this.pointLightCharacter = ubik.light.createPoint('white', 2000);
@@ -142,6 +147,16 @@ export default class Player {
             this.character.mesh.position.copy(this.character.position);
         }
 
+        if (this.ubik.input.isMouseClicked('left')) {
+            const currentTime = performance.now();
+            if (currentTime - this.lastShotTime >= 1000) { // 5000 ms = 5 segundos
+                this.ubik.logger.info(`Mouse clicked at (${this.ubik.input.mouseX}, ${this.ubik.input.mouseY})`);
+                const angle = Math.atan2(this.ubik.input.mouseY - this.y, this.ubik.input.mouseX - this.x);
+                this.shoot(angle);
+                this.lastShotTime = currentTime; // Actualizar el tiempo del último disparo
+            }
+        }
+
         if (isMoving) {
             this.isWalking = true;
             if (newDirection !== this.currentDirection) {
@@ -189,6 +204,14 @@ export default class Player {
         // Update HUD (uncomment if needed)
         document.getElementById('life').innerText = `Life: ${this.life}`;
     }
+
+    shoot(angle) {
+        console.log("dispara============================")
+        const bullet = new Bullet(this.character.position.x, this.character.position.y,3, angle,this,this.ubik);
+        
+        this.bullets.push(bullet);
+    }
+
 
     updateCamera() {
         // Set the camera to follow the player
