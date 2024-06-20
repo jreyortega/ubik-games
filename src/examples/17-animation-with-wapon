@@ -1,0 +1,453 @@
+import Ubik from '../engine/Ubik.js';
+import sources from './sources-animation.js';
+import * as THREE from 'three';
+import gsap from 'gsap';
+
+// Create a new Ubik instance (2D game)
+const ubik = new Ubik({ cameraType: 'orthographic' });
+
+// Light
+const ambientLight = ubik.light.createAmbient('white', 0.01);
+const pointLightCharacter = ubik.light.createPoint('white', 70);
+pointLightCharacter.position.set(0, 0, 0);
+pointLightCharacter.distance = 30;
+pointLightCharacter.decay = 2.6;
+ubik.scene.add(pointLightCharacter);
+ubik.scene.add(ambientLight);
+
+// Create a point light for bullets
+const bulletPointLight = ubik.light.createPoint('white', 50);
+bulletPointLight.distance = 15;
+bulletPointLight.decay = 2;
+ubik.scene.add(bulletPointLight);
+
+
+// Add orbit controls
+ubik.camera.addOrbitControls();
+
+// Create character
+const character = ubik.createObject();
+
+// Create enemies
+const enemies = [];
+for (let i = 0; i < 5; i++) {
+    const enemy = ubik.createObject();
+    enemies.push(enemy);
+}
+
+// Create the background
+const background = ubik.createObject();
+
+// Create bullet objectsconst bulletPrototype = ubik.createObject();
+
+// Load assets
+let onAssetsLoadedFinished = false;
+ubik.assets.loadAssets(sources);
+ubik.assets.onAssetsLoaded(() => {
+    // Load character assets
+    const geometry = new THREE.PlaneGeometry(8, 8);
+    const material = new THREE.MeshStandardMaterial({ map: ubik.assets.get('player_static'), transparent: true, alphaTest: 0.5 });
+    ubik.addComponent(character, 'mesh', ubik.mesh.createFromGeometry(geometry, material));
+
+    // Load enemy assets
+    const enemyGeometry = new THREE.PlaneGeometry(8, 8);
+    const enemyMaterial = new THREE.MeshStandardMaterial({ map: ubik.assets.get('enemy'), transparent: true, alphaTest: 0.5 });
+    enemies.forEach((enemy) => {
+        ubik.addComponent(enemy, 'mesh', ubik.mesh.createFromGeometry(enemyGeometry, enemyMaterial));
+    });
+
+    // Load background assets
+    const backgroundGeometry = new THREE.PlaneGeometry(200, 100);
+    const backgroundMaterial = new THREE.MeshStandardMaterial({
+        map: ubik.assets.get('background'),
+    });
+    ubik.addComponent(background, 'mesh', ubik.mesh.createFromGeometry(backgroundGeometry, backgroundMaterial));
+    background.position.set(0, 0, -10);
+
+    // Load bullet assets
+    const bulletGeometry = new THREE.PlaneGeometry(1, 1);
+    const bulletMaterial = new THREE.MeshStandardMaterial({ map: ubik.assets.get('bullet'), transparent: true, alphaTest: 0.5 });
+    ubik.addComponent(bulletPrototype, 'mesh', ubik.mesh.createFromGeometry(bulletGeometry, bulletMaterial));
+
+    // Set the flag to true
+    onAssetsLoadedFinished = true;
+});
+
+// Bullet class
+class Bullet {
+    constructor(position, direction) {
+        this.position = position.clone();
+        this.direction = direction;
+        this.speed = 0.5;
+        this.object = ubik.createObject();
+        ubik.addComponent(this.object, 'mesh', ubik.mesh.createFromGeometry(bulletPrototype.geometry, bulletPrototype.material));
+        this.object.position.set(position.x, position.y, position.z);
+        this.isDestroyed = false;
+    }
+
+    update(dt) {
+        if (this.isDestroyed) return;
+
+        switch (this.direction) {
+            case 'up':
+                this.position.y += this.speed * dt;
+                break;
+            case 'down':
+                this.position.y -= this.speed * dt;
+                break;
+            case 'left':
+                this.position.x -= this.speed * dt;
+                break;
+            case 'right':
+                this.position.x += this.speed * dt;
+                break;
+        }
+        this.object.position.set(this.position.x, this.position.y, this.position.z);
+				bulletPointLight.position.set(this.position.x, this.position.y, this.position.z);
+
+        enemies.forEach((enemy, index) => {
+            if (Math.abs(this.position.x - enemy.position.x) < 0.5 && Math.abs(this.position.y - enemy.position.y) < 0.5) {
+                ubik.scene.remove(enemy);
+                enemies.splice(index, 1);
+                this.destroy();
+            }
+        });
+    }
+
+    destroy() {
+        this.isDestroyed = true;
+        this.object.geometry.dispose();
+        this.object.material.dispose();
+        ubik.scene.remove(this.object);
+        bulletPointLight.visible = false;  // Hide the point light when the bullet is destroyed
+    }
+}
+
+// Base Weapon class
+class Weapon {
+    constructor(player) {
+        this.player = player;
+    }
+
+    shoot() {
+        // Default shooting behavior, can be overridden by subclasses
+    }
+
+    getTextures(direction) {
+        // Default textures, should be overridden by subclasses
+        return [];
+    }
+}
+
+// Shotgun class
+class Shotgun extends Weapon {
+    constructor(player) {
+        super(player);
+        this.speed = 0.3;
+    }
+
+    shoot() {
+        // Implement shotgun shooting behavior, e.g., spread shot
+        for (let i = -1; i <= 1; i++) {
+            const newBullet = new Bullet(this.player.character.position.clone(), this.player.currentDirection);
+            newBullet.position.x += i * 0.5;  // Spread bullets horizontally
+            ubik.scene.add(newBullet.object);
+        }
+    }
+
+    getTextures(direction) {
+        switch (direction) {
+            case 'right':
+                return [
+                    ubik.assets.get('player_walk_right1'),
+                    ubik.assets.get('player_walk_right2')
+                //    ubik.assets.get('player_walk_right3')
+                ];
+            case 'left':
+                return [
+                    ubik.assets.get('player_walk_left1'),
+                    ubik.assets.get('player_walk_left2')
+                    // ubik.assets.get('player_walk_left_shotgun_3')
+                ];
+            case 'up':
+                return [
+                    ubik.assets.get('player_walk_up1'),
+                    ubik.assets.get('player_walk_up2')
+                    // ubik.assets.get('player_walk_up3')
+                ];
+            case 'down':
+                return [
+                    ubik.assets.get('player_walk_down1'),
+                    ubik.assets.get('player_walk_down2')
+                    // ubik.assets.get('player_walk_down_shotgun_3')
+                ];
+            default:
+                return [];
+        }
+    }
+}
+
+class Player {
+    constructor(x, y, character) {
+        this.x = x;
+        this.y = y;
+        this.character = character;
+        this.life = 100;
+        this.isWalking = false;
+        this.animationStarted = false;
+        this.animationTimeline = null;
+        this.currentDirection = null;
+        this.weapon = null; // No weapon equipped initially
+
+        this.availableWeapons = {
+            shotgun: new Shotgun(this)
+        };
+    }
+
+    switchWeapon(weaponName) {
+        if (this.availableWeapons[weaponName]) {
+            this.weapon = this.availableWeapons[weaponName];
+            console.log(`Switched to ${weaponName}`);
+            this.stopWalkingAnimation();
+            if (this.isWalking && this.currentDirection) {
+                this.startWalkingAnimation(this.currentDirection);
+            }
+        } else {
+            this.weapon = null; // No weapon
+            console.log(`No weapon equipped`);
+            this.stopWalkingAnimation();
+            if (this.isWalking && this.currentDirection) {
+                this.startWalkingAnimation(this.currentDirection);
+            }
+        }
+    }
+
+    update(dt) {
+        let isMoving = false;
+        let newDirection = null;
+
+        if (ubik.input.isKeyPressed('w')) {
+            this.y += 0.25;
+            newDirection = 'up';
+            isMoving = true;
+        }
+        if (ubik.input.isKeyPressed('s')) {
+            this.y -= 0.25;
+            newDirection = 'down';
+            isMoving = true;
+        }
+        if (ubik.input.isKeyPressed('a')) {
+            this.x -= 0.25;
+            newDirection = 'left';
+            isMoving = true;
+        }
+        if (ubik.input.isKeyPressed('d')) {
+            this.x += 0.25;
+            newDirection = 'right';
+            isMoving = true;
+        }
+
+        if (ubik.input.isKeyPressed('1')) {
+            this.switchWeapon('shotgun');
+        }
+        if (ubik.input.isKeyPressed('0')) {
+            this.switchWeapon(null); // No weapon
+        }
+
+        if (isMoving) {
+            this.isWalking = true;
+            if (newDirection !== this.currentDirection) {
+                this.currentDirection = newDirection;
+                this.stopWalkingAnimation();
+                this.startWalkingAnimation(newDirection);
+            }
+        } else if (onAssetsLoadedFinished) {
+            this.isWalking = false;
+            this.currentDirection = null;
+            this.stopWalkingAnimation();
+        }
+
+        this.character.position.set(this.x, this.y, -5);
+        pointLightCharacter.position.set(this.x, this.y, 0);
+        document.getElementById('life').innerText = `Life: ${this.life}`;
+    }
+
+    shootWeapon() {
+        if (this.weapon) {
+            this.weapon.shoot();
+        }
+    }
+
+    startWalkingAnimation(direction) {
+        let textures;
+        if (this.weapon) {
+            textures = this.weapon.getTextures(direction);
+        } else {
+            textures = this.getNormalWalkingTextures(direction);
+        }
+
+        if (textures.length === 0) return;
+
+        const materials = textures.map(texture => new THREE.MeshStandardMaterial({ map: texture, transparent: true, alphaTest: 0.5 }));
+        const mesh = this.character.mesh;
+
+        this.animationTimeline = gsap.timeline({ repeat: -1 });
+        this.animationTimeline.to(mesh.material, { duration: 0.1, repeat: 1, yoyo: true, onUpdate: () => { mesh.material = materials[0]; } });
+        this.animationTimeline.to(mesh.material, { duration: 0.1, repeat: 1, yoyo: true, onUpdate: () => { mesh.material = materials[1]; } });
+        this.animationTimeline.to(mesh.material, { duration: 0.1, repeat: 1, yoyo: true, onUpdate: () => { mesh.material = materials[2]; } });
+    }
+
+    stopWalkingAnimation() {
+        if (this.animationTimeline) {
+            this.animationTimeline.kill();
+            this.animationTimeline = null;
+        }
+        const mesh = this.character.mesh;
+        mesh.material.map = ubik.assets.get('player_static');
+        mesh.material.needsUpdate = true;
+    }
+
+    getNormalWalkingTextures(direction) {
+        switch (direction) {
+            case 'right':
+                return [
+                    ubik.assets.get('player_walk_right_1'),
+                    ubik.assets.get('player_walk_right_2')
+                    // ubik.assets.get('player_walk_right_3')
+                ];
+            case 'left':
+                return [
+                    ubik.assets.get('player_walk_left_1'),
+                    ubik.assets.get('player_walk_left_2')
+                    // ubik.assets.get('player_walk_left_3')
+                ];
+            case 'up':
+                return [
+                    ubik.assets.get('player_walk_up_1'),
+                    ubik.assets.get('player_walk_up_2')
+                    // ubik.assets.get('player_walk_up_3')
+                ];
+            case 'down':
+                return [
+                    ubik.assets.get('player_walk_down_1'),
+                    ubik.assets.get('player_walk_down_2')
+                    // ubik.assets.get('player_walk_down_3')
+                ];
+            default:
+                return [];
+        }
+    }
+}
+
+// Enemy class
+class Enemy {
+    constructor(x, y, enemy) {
+        this.x = x;
+        this.y = y;
+        this.enemy = enemy;
+        this.playerSeen = false;
+        this.damageCooldown = 200;
+        this.lastDamageTime = 0;
+    }
+
+    update(dt) {
+        // Update enemy position
+        this.enemy.position.set(this.x, this.y, -6);
+
+        // Calculate distance between player and enemy
+        let distance = Math.sqrt((player.x - this.x) ** 2 + (player.y - this.y) ** 2);
+
+        // Check for sight collision
+        if (distance < 20 && !this.playerSeen) {
+            // Handle collision
+            console.log('Player seen!');
+            this.playerSeen = true;
+        }
+
+        // Check for damage collision
+        const currentTime = Date.now();
+        if (distance < 5 && currentTime - this.lastDamageTime > this.damageCooldown) {
+            // Handle collision
+            this.lastDamageTime = currentTime;
+            player.life -= 2;
+            if (player.life <= 0) {
+                player.life = 0;
+                document.getElementById('life').innerText = `Life: ${player.life}`;
+                window.alert('Game Over!');
+            }
+        }
+
+        // Move enemy towards player
+        if (this.playerSeen) {
+            const speed = 0.1; // Adjust the speed here
+            const dx = player.x - this.x;
+            const dy = player.y - this.y;
+            const distance = Math.sqrt(dx ** 2 + dy ** 2);
+            const normalizedDx = dx / distance;
+            const normalizedDy = dy / distance;
+            this.x += normalizedDx * speed;
+            this.y += normalizedDy * speed;
+        }
+    }
+}
+
+// Create a player instance
+const player = new Player(0, 0, character);
+
+// Instantiate enemies
+const enemy1 = new Enemy(50, 10, enemies[0]);
+const enemy2 = new Enemy(-25, 20, enemies[1]);
+const enemy3 = new Enemy(30, -34, enemies[2]);
+const enemy4 = new Enemy(-40, -30, enemies[3]);
+const enemy5 = new Enemy(20, 25, enemies[4]);
+
+// Enemy instances list
+const enemyInstances = [enemy1, enemy2, enemy3, enemy4, enemy5];
+
+// Collision avoidance function for enemies
+function collisionAvoidance(enemies) {
+    const minDistance = 7; // Minimum distance between enemies
+    for (let i = 0; i < enemies.length; i++) {
+        for (let j = i + 1; j < enemies.length; j++) {
+            const speed = 0.1;
+            const dx = enemies[j].x - enemies[i].x;
+            const dy = enemies[j].y - enemies[i].y;
+            const distance = Math.sqrt(dx ** 2 + dy ** 2);
+            if (distance < minDistance) {
+                const normalizedDx = dx / distance;
+                const normalizedDy = dy / distance;
+                enemies[i].x -= normalizedDx * speed;
+                enemies[i].y -= normalizedDy * speed;
+                enemies[j].x += normalizedDx * speed;
+                enemies[j].y += normalizedDy * speed;
+            }
+        }
+    }
+}
+// Update instructions
+ubik.update = (dt) => {
+ if (onAssetsLoadedFinished) {
+   
+	      // Update player
+		    player.update(dt);
+
+		    // Update enemies
+		    enemy1.update(dt);
+		    enemy2.update(dt);
+		    enemy3.update(dt);
+		    enemy4.update(dt);
+		    enemy5.update(dt);
+
+			  // Collision avoidance
+		    collisionAvoidance(enemyInstances);
+        
+				//Shoot bullets if 
+        if (ubik.input.isKeyPressed('space')) {
+            player.shootWeapon();
+        }
+    }
+}
+
+
+// Start the engine
+ubik.start();
