@@ -80,7 +80,7 @@ export default class Bullet {
     handleCollision(enemy) {
         // Handle collision with the enemy (e.g., reduce enemy life)
         enemy.life -= 10; // Adjust damage value as needed
-        enemy.collisionDamage();
+        enemy.enemyCollisionDamage();
         if (enemy.life <= 0) {
             enemy.dead = true;
             enemy.enemy.mesh.visible = false; // Hide enemy mesh

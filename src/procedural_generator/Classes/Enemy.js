@@ -78,9 +78,14 @@ export default class Enemy {
     }
 
     enemyCollisionDamage() {
-        this.enemy.mesh.material.map = this.ubik.assets.get('enemy_dead');
+        console.log('Enemy takes damage!', this.life);
+        // Damage texture
+        this.enemy.mesh.material.map = this.ubik.assets.get('enemy_damage');
         setTimeout(() => {
-            this.enemy.mesh.visible = false;
-        }, 300);
+            // Normal texture
+            if (!this.dead) {
+                this.enemy.mesh.material.map = this.ubik.assets.get('enemigo');
+            }
+        }, 200);
     }
 }
