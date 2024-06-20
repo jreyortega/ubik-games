@@ -2,7 +2,7 @@ import * as CANNON from 'cannon-es';
 import gsap from 'gsap';
 
 export default class Player {
-    constructor(x, y, character, ubik) {
+    constructor(x, y, character, ubik,WallsList) {
         this.x = x;
         this.y = y;
         this.character = character;
@@ -13,6 +13,12 @@ export default class Player {
         this.currentDirection = null; // Track the current direction of the player
         this.lastDirection = null; // Track the last direction of the player
         this.life = 100; // Player life
+        this.upCollision=1
+        this.rightCollision=1
+        this.downCollision=1
+        this.leftCollision=1
+        this.WallsList=WallsList
+        this.tileSize=2
         this.isAttacking = false; // Track if the player is attacking
         this.canAttack = true; // Track if the player can attack
 
@@ -41,25 +47,98 @@ export default class Player {
         let isMoving = false;
         let newDirection = null;
         const speed = 8; // units per second
+        let tolerancia= 0.05
+        this.leftCollision=1
+        this.rightCollision=1
+        this.downCollision=1
+        this.upCollision=1
 
-        if (this.ubik.input.isKeyPressed('w')) {
-            this.y += speed * dt;
+        this.WallsList.forEach(wall => {
+                
+            let deltaX=this.character.position.x-wall.position.x
+            let deltaY=this.character.position.y-wall.position.y
+            
+            
+            if (
+            this.character.position.x-this.tileSize/2<wall.position.x+this.tileSize/2+tolerancia && 
+            this.character.position.x-this.tileSize/2>wall.position.x-this.tileSize/2-tolerancia &&
+            wall.position.y+this.tileSize/2>this.character.position.y&&this.character.position.y> wall.position.y-this.tileSize/2)
+            {
+                
+                this.leftCollision=0
+                this.character.position.x = wall.position.x + this.tileSize;
+               
+            }
+            else
+            {
+                
+            }
+        
+            if (
+                this.character.position.x+this.tileSize/2>wall.position.x-this.tileSize/2 -tolerancia && 
+                this.character.position.x+this.tileSize/2<wall.position.x+this.tileSize/2 + tolerancia &&
+                wall.position.y+this.tileSize/2>this.character.position.y&&this.character.position.y> wall.position.y-this.tileSize/2 )
+                {
+                    this.rightCollision=0
+                    this.character.position.x = wall.position.x - this.tileSize; 
+                   
+                }
+                else
+                {
+                    
+                    
+                }
+            if(this.character.position.y+this.tileSize/2>wall.position.y-this.tileSize/2 -tolerancia && 
+                this.character.position.y+this.tileSize/2<wall.position.y+this.tileSize/2 + tolerancia &&
+                wall.position.x+this.tileSize/2>this.character.position.x&&this.character.position.x> wall.position.x-this.tileSize/2)
+            {
+                this.downCollision=0
+                this.character.position.y = wall.position.y - this.tileSize;
+                    
+            }
+            else
+            {
+                
+            }  
+            if(this.character.position.y-this.tileSize/2<wall.position.y+this.tileSize/2 + tolerancia && 
+            this.character.position.y-this.tileSize/2>wall.position.y-this.tileSize/2 -tolerancia &&
+            wall.position.x+this.tileSize/2>this.character.position.x && this.character.position.x> wall.position.x-this.tileSize/2)
+            {
+                this.upCollision=0
+                this.character.position.y = wall.position.y + this.tileSize;
+                
+            }
+            else
+            {
+                
+            }        
+        })
+
+        if (this.ubik.input.isKeyPressed('w') && this.downCollision==1) {
+            this.y += 0.25;
             newDirection = 'up';
+           
             isMoving = true;
         }
-        if (this.ubik.input.isKeyPressed('s')) {
-            this.y -= speed * dt;
+        if (this.ubik.input.isKeyPressed('s') && this.upCollision==1) {
+            this.y -= 0.25;
             newDirection = 'down';
+            
             isMoving = true;
         }
-        if (this.ubik.input.isKeyPressed('a')) {
-            this.x -= speed * dt;
+        if (this.ubik.input.isKeyPressed('a') && this.leftCollision==1) {
+            this.x -= 0.25;
             newDirection = 'left';
+            
+            
             isMoving = true;
+            
         }
-        if (this.ubik.input.isKeyPressed('d')) {
-            this.x += speed * dt;
+        if (this.ubik.input.isKeyPressed('d') && this.rightCollision==1) {
+            this.x += 0.25;
             newDirection = 'right';
+            
+            
             isMoving = true;
         }
         if (this.ubik.input.isKeyPressed(' ') && this.canAttack) {
@@ -72,6 +151,9 @@ export default class Player {
                 }, 1000);
             }, 1000);
         }
+
+        this.character.position.set(this.x, this.y, 1);
+        this.character.mesh.position.copy(this.character.position);
 
         if (isMoving) {
             this.isWalking = true;
@@ -87,8 +169,7 @@ export default class Player {
             this.stopWalkingAnimation();
         }
 
-        // Update character position
-        this.character.position.set(this.x, this.y, 1);
+
 
         // Update character light position
         this.pointLightCharacter.position.set(this.x, this.y, 10);

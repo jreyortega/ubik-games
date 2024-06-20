@@ -665,6 +665,7 @@ export function inicializar_mapa(dungeon, tileSize, ubik, sources, character, pl
         ubik.addComponent(key, 'mesh', ubik.mesh.createFromGeometry(keyGeometry, keyMaterial));
 
     });
-
-    return enemies;
+    const WallsList2=DownWalls.concat(UpWalls,RightSideWalls,LeftSideWalls,LeftDownCornerWalls,RightDownCornerWalls,RightUpCornerWallsFillUp,RightUpCornerWalls,LeftUpCornerWalls,LeftUpCornerWallsFillUp)
+    
+    return [enemies,WallsList2];
 }
