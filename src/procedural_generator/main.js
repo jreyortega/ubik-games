@@ -30,13 +30,26 @@ window.addEventListener('DOMContentLoaded', (event) => {
     audioButton.addEventListener('click', toggleAudio);
 });
 
+// Function to get URL parameters
+function getUrlParameter(name) {
+    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+    const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+    const results = regex.exec(location.search);
+    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+}
+
+// Get the level from the URL
+let level = parseInt(getUrlParameter('level')) || 1;
+
+// Update the level in the HUD
+document.getElementById('level').innerText = `Level: ${level}`;
 
 const ubik = new Ubik({ cameraType: 'orthographic' });
 
-// // Gravity
+// Gravity
 ubik.physics.world.gravity.set(0, -9.82, 0);
 
-// // Light
+// Light
 const ambientLight = ubik.light.createAmbient('white', 0.0025);
 ubik.scene.add(ambientLight);
 
@@ -45,8 +58,8 @@ const tileSize = 2;
 const dungeonGenerator = new CorridorFirstDungeonGenerator({ x: 0, y: 0 }, 100, 3, true);
 const dungeon = dungeonGenerator.runProceduralGeneration();
 
-//#######INICIALIZACION DE OBJETOS
-//-------Inicializacion del objeto character-----------
+// INICIALIZACION DE OBJETOS
+// Inicializacion del objeto character
 const tam = new CANNON.Vec3(tileSize / 2, tileSize / 2, tileSize / 2);
 const character = ubik.createObject();
 character.position.set(0, 0, 0);
@@ -59,15 +72,15 @@ ubik.addComponent(
     })
 );
 
-//--------Inicializción del objeto portal------------
+// Inicializción del objeto portal
 const portal = ubik.createObject();
 
-//--------Inicialización del objeto llave--------
+// Inicialización del objeto llave
 const key = ubik.createObject();
-const WallsList=[]
+const WallsList = [];
 const player = new Player(0, 0, character, ubik, WallsList, key);
-const [enemies,WallsList2] = inicializar_mapa(dungeon, tileSize, ubik, sources, character, player, portal, key, THREE, CANNON);
-player.WallsList=WallsList2
+const [enemies, WallsList2] = inicializar_mapa(dungeon, tileSize, ubik, sources, character, player, portal, key, THREE, CANNON);
+player.WallsList = WallsList2;
 const Portal_1 = new Portal(portal, ubik, player);
 
 // Collision avoidance function for enemies
@@ -100,6 +113,12 @@ ubik.update = (dt) => {
         enemy.update(dt);
     });
     collisionAvoidance(enemies);
+
+    // Check if the next level should be loaded
+    if (Portal_1.getNextLevel()) {
+        const nextLevel = level + 1;
+        window.location.href = `${window.location.pathname}?level=${nextLevel}`;
+    }
 };
 
 ubik.start();
