@@ -47,28 +47,24 @@ export default class Player {
         let isMoving = false;
         let newDirection = null;
         const speed = 8; // units per second
-        let tolerancia = 0.05
-        this.leftCollision = 1
-        this.rightCollision = 1
-        this.downCollision = 1
-        this.upCollision = 1
+        let tolerancia = 0.05;
+        this.leftCollision = 1;
+        this.rightCollision = 1;
+        this.downCollision = 1;
+        this.upCollision = 1;
 
         this.WallsList.forEach(wall => {
 
-            let deltaX = this.character.position.x - wall.position.x
-            let deltaY = this.character.position.y - wall.position.y
-
+            let deltaX = this.character.position.x - wall.position.x;
+            let deltaY = this.character.position.y - wall.position.y;
 
             if (
                 this.character.position.x - this.tileSize / 2 < wall.position.x + this.tileSize / 2 + tolerancia &&
                 this.character.position.x - this.tileSize / 2 > wall.position.x - this.tileSize / 2 - tolerancia &&
                 wall.position.y + this.tileSize / 2 > this.character.position.y && this.character.position.y > wall.position.y - this.tileSize / 2) {
 
-                this.leftCollision = 0
+                this.leftCollision = 0;
                 this.character.position.x = wall.position.x + this.tileSize;
-
-            }
-            else {
 
             }
 
@@ -76,59 +72,46 @@ export default class Player {
                 this.character.position.x + this.tileSize / 2 > wall.position.x - this.tileSize / 2 - tolerancia &&
                 this.character.position.x + this.tileSize / 2 < wall.position.x + this.tileSize / 2 + tolerancia &&
                 wall.position.y + this.tileSize / 2 > this.character.position.y && this.character.position.y > wall.position.y - this.tileSize / 2) {
-                this.rightCollision = 0
+                this.rightCollision = 0;
                 this.character.position.x = wall.position.x - this.tileSize;
 
             }
-            else {
 
-
-            }
             if (this.character.position.y + this.tileSize / 2 > wall.position.y - this.tileSize / 2 - tolerancia &&
                 this.character.position.y + this.tileSize / 2 < wall.position.y + this.tileSize / 2 + tolerancia &&
                 wall.position.x + this.tileSize / 2 > this.character.position.x && this.character.position.x > wall.position.x - this.tileSize / 2) {
-                this.downCollision = 0
+                this.downCollision = 0;
                 this.character.position.y = wall.position.y - this.tileSize;
 
             }
-            else {
 
-            }
             if (this.character.position.y - this.tileSize / 2 < wall.position.y + this.tileSize / 2 + tolerancia &&
                 this.character.position.y - this.tileSize / 2 > wall.position.y - this.tileSize / 2 - tolerancia &&
                 wall.position.x + this.tileSize / 2 > this.character.position.x && this.character.position.x > wall.position.x - this.tileSize / 2) {
-                this.upCollision = 0
+                this.upCollision = 0;
                 this.character.position.y = wall.position.y + this.tileSize;
 
             }
-            else {
-
-            }
-        })
+        });
 
         if (this.ubik.input.isKeyPressed('w') && this.downCollision == 1) {
             this.y += speed * dt;
             newDirection = 'up';
-
             isMoving = true;
         }
         if (this.ubik.input.isKeyPressed('s') && this.upCollision == 1) {
             this.y -= speed * dt;
             newDirection = 'down';
-
             isMoving = true;
         }
         if (this.ubik.input.isKeyPressed('a') && this.leftCollision == 1) {
             this.x -= speed * dt;
             newDirection = 'left';
-
             isMoving = true;
-
         }
         if (this.ubik.input.isKeyPressed('d') && this.rightCollision == 1) {
             this.x += speed * dt;
             newDirection = 'right';
-
             isMoving = true;
         }
         if (this.ubik.input.isKeyPressed(' ') && this.canAttack) {
@@ -138,8 +121,8 @@ export default class Player {
                 this.isAttacking = false;
                 setTimeout(() => {
                     this.canAttack = true;
-                }, 1000);
-            }, 1000);
+                }, 200);
+            }, 200);
         }
 
         this.character.position.set(this.x, this.y, 1);
@@ -154,12 +137,33 @@ export default class Player {
             }
         } else {
             this.isWalking = false;
-            this.lastDirection = this.currentDirection;
-            this.currentDirection = null;
-            this.stopWalkingAnimation();
+            if (this.currentDirection !== null) {
+                this.lastDirection = this.currentDirection;
+                this.currentDirection = null;
+                this.stopWalkingAnimation();
+            }
+            if (this.isAttacking) {
+                if (this.lastDirection === 'right') {
+                    this.character.mesh.material.map = this.ubik.assets.get('player_attacking_right');
+                } else if (this.lastDirection === 'left') {
+                    this.character.mesh.material.map = this.ubik.assets.get('player_attacking_left');
+                } else if (this.lastDirection === 'up') {
+                    this.character.mesh.material.map = this.ubik.assets.get('player_attacking_up');
+                } else if (this.lastDirection === 'down') {
+                    this.character.mesh.material.map = this.ubik.assets.get('player_attacking_down');
+                }
+            } else {
+                if (this.lastDirection === 'right') {
+                    this.character.mesh.material.map = this.ubik.assets.get('player_walk_right2');
+                } else if (this.lastDirection === 'left') {
+                    this.character.mesh.material.map = this.ubik.assets.get('player_walk_left2');
+                } else if (this.lastDirection === 'up') {
+                    this.character.mesh.material.map = this.ubik.assets.get('player_walk_up1');
+                } else if (this.lastDirection === 'down') {
+                    this.character.mesh.material.map = this.ubik.assets.get('player_walk_down1');
+                }
+            }
         }
-
-
 
         // Update character light position
         this.pointLightCharacter.position.set(this.x, this.y, 10);
@@ -171,6 +175,7 @@ export default class Player {
         // Update HUD (uncomment if needed)
         document.getElementById('life').innerText = `Life: ${this.life}`;
     }
+
 
     updateCamera() {
         // Set the camera to follow the player
