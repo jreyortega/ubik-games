@@ -43,7 +43,7 @@ export default class Enemy {
 
         // Check for damage collision from player to enemy
         if (distance < 1 && this.player.isAttacking) {
-            this.life -= 0.5; // Adjust the damage value as needed
+            this.life -= 0.75; // Adjust the damage value as needed
             console.log('Enemy takes damage!', this.life);
             // Damage texture
             this.enemy.mesh.material.map = this.ubik.assets.get('enemy_damage');
