@@ -8,6 +8,23 @@ import Player from './Classes/Player.js';
 import Enemy from './Classes/Enemy.js';
 import Portal from './Classes/Portal.js';
 
+// Play background music
+window.addEventListener('DOMContentLoaded', (event) => {
+    const backgroundMusic = document.getElementById('background-music');
+    const audioButton = document.getElementById('audio-button');
+
+    // Function to play the audio
+    const playAudio = () => {
+        backgroundMusic.play().catch(error => {
+            console.error("Failed to play audio:", error);
+        });
+    };
+
+    // Listen for the button click to play audio
+    audioButton.addEventListener('click', playAudio);
+});
+
+
 const ubik = new Ubik({ cameraType: 'orthographic' });
 
 // // Gravity
