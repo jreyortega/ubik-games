@@ -1,0 +1,1 @@
+ubik.assets.get('player_walk_down_3')
