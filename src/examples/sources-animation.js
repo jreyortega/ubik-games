@@ -50,6 +50,11 @@ export default [
         path: '../assets/player/enemy.png'
     },
     {
+        name:'birdbody',
+        type: 'texture',
+        path: '../assets/assets_flappy_bird/birdbody.png'
+    },
+    {
         name:'background',
         type: 'texture',
         path: '../assets/background/dungeon.jpg'

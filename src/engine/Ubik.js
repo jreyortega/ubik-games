@@ -9,6 +9,7 @@ import Light from './Light';
 import AssetManager from './AssetManager';
 import Physics from './Physics';
 import Forces from './Forces';
+import CannonDebugger from 'cannon-es-debugger';
 
 class Ubik {
     constructor(options = {}) {
@@ -53,6 +54,11 @@ class Ubik {
         // Physics
         this.physics = new Physics(this);
 
+         // Initialize CannonDebugger
+        //  this.physicsDebugger = new CannonDebugger(this.scene, this.physics.world, {
+        //     // Options for the debugger (optional)
+        //     color: 0x00ff00 // Set wireframe color to green for visibility
+        // });
         // Objects
         this.objects = [];
 
@@ -115,6 +121,9 @@ class Ubik {
 
         // Physics
         this.physics.update(this.dt, this.objects);
+
+        // Update the CannonDebugger
+        // this.physicsDebugger.update(); // Add this line
 
         // Rendering
         this.renderer.frame();

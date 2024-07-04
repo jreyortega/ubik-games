@@ -54,4 +54,9 @@ export default class Forces {
 
         return new THREE.Vector3().copy(springForce);
     }
+
+     // Method to generate an upward jump force
+     generateJumpForce(strength) {
+        return new CANNON.Vec3(0, strength, 0);
+    }
 }
